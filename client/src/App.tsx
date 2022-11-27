@@ -1,56 +1,49 @@
 import './App.scss'
-import { useGuestRequest } from './lib/react-query'
+import SolveCaptcha from './components/SolveCaptcha'
+import { StartInput, trpc } from './lib/trpc'
+import CircularProgress from '@mui/material/CircularProgress'
+import Alert from '@mui/material/Alert'
+import { Button } from '@mui/material'
 
-function App() {
-  const {
-    isStartLoading,
-    startError,
-    captchaImg,
-    solveCaptcha,
-    isSolveLoading,
-    solveError,
-    solveMsg,
-  } = useGuestRequest()
+const defaultData: StartInput = {
+  student: {
+    id: '212638993',
+    fullName: 'מרייה דרגילב',
+    phone: '0523565333',
+    dorm: 'מעונות איינשטיין',
+    building: 'F',
+    floor: '2',
+    apartmentNumber: '105',
+    side: 'ימין',
+  },
+  category: 'פניות בנושא מבקרים',
+  guest: {
+    id: '324173046',
+    fullName: 'עומר כהן',
+    phone: '0543395856',
+  },
+}
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    const answer = (
-      e.currentTarget.querySelector('#answer') as HTMLInputElement
-    ).value
-    solveCaptcha(answer)
+export default function App() {
+  const { mutate, data, isLoading, error } = trpc.start.useMutation()
+
+  const handleStart = () => {
+    mutate(defaultData)
   }
+
   return (
     <div className="App">
-      {startError ? (
-        <div style={{ color: 'red' }}>{(startError as any).message}</div>
-      ) : isStartLoading ? (
-        <div>loading...</div>
-      ) : !solveError ? (
-        <>
-          <img src={captchaImg} />
-          <form onSubmit={handleSubmit}>
-            <input type="text" name="answer" id="answer" />
-            <button type="submit">submit</button>
-          </form>
-        </>
-      ) : null}
-      {isSolveLoading && <div>solve loading...</div>}
-      {solveError && (
-        <div style={{ color: 'red' }}>
-          {(solveError as any).response.data.err}
-        </div>
-      )}
-      {solveMsg && (
-        <div
-          style={{
-            color: 'green',
-          }}
-        >
-          {solveMsg}
-        </div>
+      {isLoading ? (
+        <CircularProgress />
+      ) : error ? (
+        <Alert severity="error">{error.message}</Alert>
+      ) : data ? (
+        <SolveCaptcha id={data.id} captchaImgPath={data.captchaImgPath} />
+      ) : (
+        <Button variant="contained" onClick={handleStart}>
+          התחלת בקשה
+        </Button>
       )}
     </div>
   )
 }
-
-export default App
