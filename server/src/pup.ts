@@ -35,6 +35,8 @@ export const start = async (input: StartInput) => {
       '--no-sandbox',
       '--disable-setuid-sandbox',
       '--ignore-certificate-errors',
+      '--disable-gpu',
+      '--window-size=1920x1080',
     ],
     ignoreHTTPSErrors: true,
   })
