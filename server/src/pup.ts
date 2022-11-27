@@ -29,7 +29,10 @@ export interface StartInput {
 }
 
 export const start = async (input: StartInput) => {
-  const browser = await puppeteer.launch({ headless: false })
+  const browser = await puppeteer.launch({
+    headless: false,
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+  })
   const page = await browser.newPage()
 
   const pupId = uuid()
