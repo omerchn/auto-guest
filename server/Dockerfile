@@ -6,4 +6,4 @@ RUN npm ci
 COPY . ./
 EXPOSE 4000
 
-CMD xvfb-run --auto-servernum npm start
+CMD ["npm", "start"]
