@@ -3,6 +3,8 @@ import Alert from '@mui/material/Alert'
 import CircularProgress from '@mui/material/CircularProgress'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
+import IconButton from '@mui/material/IconButton'
+import LoopRounded from '@mui/icons-material/LoopRounded'
 
 interface Props {
   id: string
@@ -27,7 +29,17 @@ export default function SolveCaptcha(props: Props) {
       {isLoading ? (
         <CircularProgress />
       ) : error ? (
-        <Alert severity="error">{error.message}</Alert>
+        <>
+          <Alert severity="error">{error.message}</Alert>
+          <IconButton
+            style={{
+              margin: '.5em',
+            }}
+            onClick={() => location.reload()}
+          >
+            <LoopRounded />
+          </IconButton>
+        </>
       ) : data ? (
         <Alert severity="success">{data}</Alert>
       ) : (
