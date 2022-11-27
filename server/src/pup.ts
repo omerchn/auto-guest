@@ -29,115 +29,122 @@ export interface StartInput {
 }
 
 export const start = async (input: StartInput) => {
-  const browser = await puppeteer.launch({
-    headless: false,
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
-  })
-  const page = await browser.newPage()
+  try {
+    const browser = await puppeteer.launch({
+      headless: false,
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    })
+    const page = await browser.newPage()
 
-  const pupId = uuid()
-  pupCache[pupId] = {
-    browser,
-    page,
-  }
-
-  await page.goto('https://meonot.shikunbinui.com/')
-
-  // Full Name
-  await page.waitForSelector('[name=FullName]')
-  await page.type('[name=FullName]', input.student.fullName)
-
-  // Phone
-  await page.waitForSelector('[name=Phone]')
-  await page.type('[name=Phone]', input.student.phone)
-
-  // Dorm
-  await page.waitForSelector('[name=DormDropDown]')
-  await page.select(
-    '[name=DormDropDown]',
-    await getOptionValue(page, '[name=DormDropDown]', input.student.dorm)
-  )
-
-  // Building
-  await page.waitForSelector('[name=DropDownBuilding]')
-  await page.select(
-    '[name=DropDownBuilding]',
-    await getOptionValue(
+    const pupId = uuid()
+    pupCache[pupId] = {
+      browser,
       page,
-      '[name=DropDownBuilding]',
-      input.student.building
+    }
+
+    await page.goto('https://meonot.shikunbinui.com/')
+
+    // Full Name
+    await page.waitForSelector('[name=FullName]')
+    await page.type('[name=FullName]', input.student.fullName)
+
+    // Phone
+    await page.waitForSelector('[name=Phone]')
+    await page.type('[name=Phone]', input.student.phone)
+
+    // Dorm
+    await page.waitForSelector('[name=DormDropDown]')
+    await page.select(
+      '[name=DormDropDown]',
+      await getOptionValue(page, '[name=DormDropDown]', input.student.dorm)
     )
-  )
 
-  // Floor
-  await page.waitForSelector('[name=DropDownFloor]')
-  await page.select(
-    '[name=DropDownFloor]',
-    await getOptionValue(page, '[name=DropDownFloor]', input.student.floor)
-  )
+    // Building
+    await page.waitForSelector('[name=DropDownBuilding]')
+    await page.select(
+      '[name=DropDownBuilding]',
+      await getOptionValue(
+        page,
+        '[name=DropDownBuilding]',
+        input.student.building
+      )
+    )
 
-  // Apartment Number
-  await page.waitForSelector('.select2-selection')
-  await page.click('.select2-selection', { delay: 100 })
-  const optionIndex = await getOptionIndex(
-    page,
-    '.select2-results',
-    input.student.apartmentNumber
-  )
-  await page.click(`.select2-results__option:nth-child(${optionIndex})`)
+    // Floor
+    await page.waitForSelector('[name=DropDownFloor]')
+    await page.select(
+      '[name=DropDownFloor]',
+      await getOptionValue(page, '[name=DropDownFloor]', input.student.floor)
+    )
 
-  // Side
-  await page.waitForSelector('[name=DropDownSide]')
-  await page.select('[name=DropDownSide]', input.student.side)
+    // Apartment Number
+    await page.waitForSelector('.select2-selection')
+    await page.click('.select2-selection', { delay: 100 })
+    const optionIndex = await getOptionIndex(
+      page,
+      '.select2-results',
+      input.student.apartmentNumber
+    )
+    await page.click(`.select2-results__option:nth-child(${optionIndex})`)
 
-  // Category
-  await page.waitForSelector('[name=DropDownFaultCategory]')
-  await page.select(
-    '[name=DropDownFaultCategory]',
-    await getOptionValue(page, '[name=DropDownFaultCategory]', input.category)
-  )
-  // await page.waitForNavigation()
-  await page.waitForNetworkIdle()
+    // Side
+    await page.waitForSelector('[name=DropDownSide]')
+    await page.select('[name=DropDownSide]', input.student.side)
 
-  // ID
-  await page.waitForSelector('[name=ID_TB]')
-  await page.type('[name=ID_TB]', input.student.id)
+    // Category
+    await page.waitForSelector('[name=DropDownFaultCategory]')
+    await page.select(
+      '[name=DropDownFaultCategory]',
+      await getOptionValue(page, '[name=DropDownFaultCategory]', input.category)
+    )
+    // await page.waitForNavigation()
+    await page.waitForNetworkIdle()
 
-  // Entrance Date
-  const today = new Date().toLocaleDateString('en-GB')
-  await page.waitForSelector('[name=EntranceDate_TB]')
-  await page.type('[name=EntranceDate_TB]', today)
+    // ID
+    await page.waitForSelector('[name=ID_TB]')
+    await page.type('[name=ID_TB]', input.student.id)
 
-  // Leave Date
-  if (input.category === 'פניות בנושא לינה') {
-    const tomorrow = new Date(Date.now() + 86400000).toLocaleDateString('en-GB')
-    await page.waitForSelector('[name=LeaveDate_TB]')
-    await page.type('[name=LeaveDate_TB]', tomorrow)
+    // Entrance Date
+    const today = new Date().toLocaleDateString('en-GB')
+    await page.waitForSelector('[name=EntranceDate_TB]')
+    await page.type('[name=EntranceDate_TB]', today)
+
+    // Leave Date
+    if (input.category === 'פניות בנושא לינה') {
+      const tomorrow = new Date(Date.now() + 86400000).toLocaleDateString(
+        'en-GB'
+      )
+      await page.waitForSelector('[name=LeaveDate_TB]')
+      await page.type('[name=LeaveDate_TB]', tomorrow)
+    }
+
+    // Guest ID
+    await page.waitForSelector('[name=GuestID_TB]')
+    await page.type('[name=GuestID_TB]', input.guest.id)
+
+    // Guest Name
+    await page.waitForSelector('[name=GuestName_TB]')
+    await page.type('[name=GuestName_TB]', input.guest.fullName)
+
+    // Guest Phone
+    await page.waitForSelector('[name=GuestPhone_TB]')
+    await page.type('[name=GuestPhone_TB]', input.guest.phone)
+
+    // Captcha
+    await page.waitForSelector('.BDC_CaptchaImageDiv')
+    const captchaEl = await page.$('.BDC_CaptchaImageDiv')
+    await captchaEl?.screenshot({ path: `captchas/${pupId}.png` })
+
+    // Auto close instance after 1 minute
+    setTimeout(() => {
+      closePup(pupId, browser)
+    }, 60000)
+
+    return pupId
+  } catch (err) {
+    console.log(err)
+    throw err
   }
-
-  // Guest ID
-  await page.waitForSelector('[name=GuestID_TB]')
-  await page.type('[name=GuestID_TB]', input.guest.id)
-
-  // Guest Name
-  await page.waitForSelector('[name=GuestName_TB]')
-  await page.type('[name=GuestName_TB]', input.guest.fullName)
-
-  // Guest Phone
-  await page.waitForSelector('[name=GuestPhone_TB]')
-  await page.type('[name=GuestPhone_TB]', input.guest.phone)
-
-  // Captcha
-  await page.waitForSelector('.BDC_CaptchaImageDiv')
-  const captchaEl = await page.$('.BDC_CaptchaImageDiv')
-  await captchaEl?.screenshot({ path: `captchas/${pupId}.png` })
-
-  // Auto close instance after 1 minute
-  setTimeout(() => {
-    closePup(pupId, browser)
-  }, 60000)
-
-  return pupId
 }
 
 export const solveCaptchaAndSubmit = async (pupId: string, answer: string) => {
