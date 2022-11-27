@@ -31,7 +31,12 @@ export interface StartInput {
 export const start = async (input: StartInput) => {
   const browser = await puppeteer.launch({
     headless: false,
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--ignore-certificate-errors',
+    ],
+    ignoreHTTPSErrors: true,
   })
   const page = await browser.newPage()
   await page.setUserAgent(
