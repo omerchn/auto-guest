@@ -32,6 +32,9 @@ export const start = async (input: StartInput) => {
   const browser = await puppeteer.launch({
     headless: false,
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    env: {
+      DISPLAY: ':10.0',
+    },
   })
   const page = await browser.newPage()
 
