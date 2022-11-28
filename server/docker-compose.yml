@@ -1,0 +1,28 @@
+version: '3'
+services:
+  proxy:
+    image: caddy:2.5.2-alpine
+    restart: unless-stopped
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+    environment:
+      - DOMAIN=${DOMAIN:-localhost}
+    depends_on:
+      - server
+    networks:
+      - proxy-server
+
+  server:
+    restart: unless-stopped
+    build:
+      context: ./
+    ports:
+      - 4000:4000
+    networks:
+      - proxy-server
+
+networks:
+  proxy-server:

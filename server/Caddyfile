@@ -1,0 +1,7 @@
+{$DOMAIN} {
+	encode gzip
+
+	handle /* {
+		reverse_proxy server:4000
+	}
+}
