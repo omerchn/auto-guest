@@ -1,4 +1,4 @@
-import { trpc } from '../lib/trpc'
+import { trpc } from '../../lib/trpc'
 import Alert from '@mui/material/Alert'
 import CircularProgress from '@mui/material/CircularProgress'
 import TextField from '@mui/material/TextField'
