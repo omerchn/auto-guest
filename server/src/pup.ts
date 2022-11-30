@@ -144,10 +144,10 @@ export const start = async (input: StartInput) => {
     const captchaEl = await page.$('.BDC_CaptchaImageDiv')
     await captchaEl?.screenshot({ path: `captchas/${pupId}.png` })
 
-    // Auto close instance after 1 minute
+    // Auto close instance after 30 seconds
     setTimeout(() => {
       closePup(pupId, browser)
-    }, 60000)
+    }, 30000)
 
     return pupId
   } catch (err) {
