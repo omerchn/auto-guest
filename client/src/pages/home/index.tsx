@@ -7,6 +7,8 @@ import { useLocalStorage } from '../../hooks/storage'
 // components
 import CircularProgress from '@mui/material/CircularProgress'
 import Alert from '@mui/material/Alert'
+import IconButton from '@mui/material/IconButton'
+import LoopRounded from '@mui/icons-material/LoopRounded'
 import SolveCaptcha from './SolveCaptcha'
 import SavedGuests from './SavedGuests'
 import SavedStudent from './SavedStudent'
@@ -33,7 +35,17 @@ export default function Home() {
       {isLoading ? (
         <CircularProgress />
       ) : error ? (
-        <Alert severity="error">{error.message}</Alert>
+        <>
+          <Alert severity="error">{error.message}</Alert>
+          <IconButton
+            style={{
+              margin: '.5em',
+            }}
+            onClick={reset}
+          >
+            <LoopRounded />
+          </IconButton>
+        </>
       ) : data ? (
         <SolveCaptcha
           id={data.id}
