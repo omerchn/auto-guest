@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 // components
 import Button from '@mui/material/Button'
+import Box from '@mui/material/Box'
 import StudentModal, { Student } from '../../components/StudentModal'
 
 interface Props {
@@ -13,7 +14,11 @@ export default function SavedStudent(props: Props) {
   const [open, setOpen] = useState(false)
 
   return (
-    <div>
+    <Box
+      style={{
+        margin: '1em',
+      }}
+    >
       {props.student ? (
         <div>
           <div>שלום, {props.student.fullName.split(' ')[0]}</div>
@@ -30,6 +35,6 @@ export default function SavedStudent(props: Props) {
         onSubmit={(data) => props.setStudent(data)}
         defaultValues={props.student}
       />
-    </div>
+    </Box>
   )
 }

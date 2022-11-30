@@ -14,9 +14,9 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogContentText from '@mui/material/DialogContentText'
 
 const GuestSchema = z.object({
-  id: z.string().trim().length(9, 'נדרש להזין מספר ת.ז תקין'),
-  fullName: z.string().trim().min(1, 'נדרש להזין שם מלא'),
-  phone: z.string().trim().length(10, 'נדרש להזין מספר טלפון תקין'),
+  id: z.string().trim().length(9, 'יש להזין מספר ת.ז תקין'),
+  fullName: z.string().trim().min(1, 'יש להזין שם מלא'),
+  phone: z.string().trim().length(10, 'יש להזין מספר טלפון תקין'),
 })
 
 export type Guest = z.infer<typeof GuestSchema>

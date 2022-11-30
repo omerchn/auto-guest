@@ -9,6 +9,7 @@ import LoopRounded from '@mui/icons-material/LoopRounded'
 interface Props {
   id: string
   captchaImgPath: string
+  reset: () => void
 }
 
 const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:4000'
@@ -35,7 +36,7 @@ export default function SolveCaptcha(props: Props) {
             style={{
               margin: '.5em',
             }}
-            onClick={() => location.reload()}
+            onClick={props.reset}
           >
             <LoopRounded />
           </IconButton>

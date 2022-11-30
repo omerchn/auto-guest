@@ -15,20 +15,20 @@ import ControlledSelect from '../hook-form/ControlledSelect'
 import { useEffect } from 'react'
 
 const StudentSchema = z.object({
-  id: z.string().trim().length(9, 'נדרש להזין מספר ת.ז תקין'),
-  fullName: z.string().trim().min(1, 'נדרש להזין שם מלא'),
-  phone: z.string().trim().length(10, 'נדרש להזין מספר טלפון תקין'),
+  id: z.string().trim().length(9, 'יש להזין מספר ת.ז תקין'),
+  fullName: z.string().trim().min(1, 'יש להזין שם מלא'),
+  phone: z.string().trim().length(10, 'יש להזין מספר טלפון תקין'),
   dorm: z.enum(['מעונות איינשטיין', 'מעונות ברושים'], {
-    required_error: 'נדרש לבחור מעון',
+    required_error: 'יש לבחור מעון',
   }),
   building: z
     .string()
     .trim()
-    .length(1, 'נדרש להזין מזהה בניין תקין')
+    .length(1, 'יש להזין מזהה בניין תקין')
     .transform((val) => val.toUpperCase()),
-  floor: z.string().trim().min(1, 'נדרש להזין קומה'),
-  apartmentNumber: z.string().trim().min(1, 'נדרש להזין מספר דירה'),
-  side: z.enum(['ימין', 'שמאל'], { required_error: 'נדרש לבחור צד' }),
+  floor: z.string().trim().min(1, 'יש להזין קומה'),
+  apartmentNumber: z.string().trim().min(1, 'יש להזין מספר דירה'),
+  side: z.enum(['ימין', 'שמאל'], { required_error: 'יש לבחור צד' }),
 })
 
 export type Student = z.infer<typeof StudentSchema>
