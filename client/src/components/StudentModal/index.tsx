@@ -33,6 +33,17 @@ const StudentSchema = z.object({
 
 export type Student = z.infer<typeof StudentSchema>
 
+export const DEFAULT = {
+  id: '',
+  fullName: '',
+  phone: '',
+  dorm: undefined,
+  building: '',
+  floor: '',
+  apartmentNumber: '',
+  side: undefined,
+}
+
 interface Props {
   defaultValues?: Student
   onSubmit: (data: Student) => void
@@ -48,58 +59,21 @@ export default function StudentModal(props: Props) {
     reset,
   } = useForm<Student>({
     resolver: zodResolver(StudentSchema),
-    defaultValues: props.defaultValues || {
-      id: '333333334',
-      fullName: '',
-      phone: '3333333344',
-      dorm: undefined,
-      building: '',
-      floor: '',
-      apartmentNumber: '',
-      side: undefined,
-    },
   })
 
   const onSubmit: SubmitHandler<Student> = (data) => {
     props.onSubmit(data)
-    props.handleClose()
     resetForm()
   }
 
-  useEffect(() => {
-    reset(
-      props.defaultValues || {
-        id: '',
-        fullName: '',
-        phone: '',
-        dorm: undefined,
-        building: '',
-        floor: '',
-        apartmentNumber: '',
-        side: undefined,
-      }
-    )
-  }, [props.defaultValues])
-
   const resetForm = () => {
-    reset(
-      props.defaultValues || {
-        id: '',
-        fullName: '',
-        phone: '',
-        dorm: undefined,
-        building: '',
-        floor: '',
-        apartmentNumber: '',
-        side: undefined,
-      }
-    )
+    props.handleClose()
+    reset(props.defaultValues)
   }
 
-  const onClose = () => {
-    props.handleClose()
-    reset()
-  }
+  useEffect(() => {
+    reset(props.defaultValues || DEFAULT)
+  }, [props.defaultValues])
 
   return (
     <Dialog open={props.open} onClose={props.handleClose}>
@@ -205,7 +179,7 @@ export default function StudentModal(props: Props) {
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button variant="text" onClick={onClose}>
+          <Button variant="text" onClick={resetForm}>
             ביטול
           </Button>
           <Button variant="outlined" type="submit">

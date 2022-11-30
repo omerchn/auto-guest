@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -20,6 +21,12 @@ const GuestSchema = z.object({
 
 export type Guest = z.infer<typeof GuestSchema>
 
+export const DEFAULT = {
+  id: '',
+  fullName: '',
+  phone: '',
+}
+
 interface Props {
   defaultValues?: Guest
   onSubmit: (data: Guest) => void
@@ -35,11 +42,6 @@ export default function GuestModal(props: Props) {
     reset,
   } = useForm<Guest>({
     resolver: zodResolver(GuestSchema),
-    defaultValues: props.defaultValues || {
-      id: '',
-      fullName: '',
-      phone: '',
-    },
   })
 
   const onSubmit: SubmitHandler<Guest> = (data) => {
@@ -48,10 +50,14 @@ export default function GuestModal(props: Props) {
     reset()
   }
 
-  const onClose = () => {
+  const resetForm = () => {
     props.handleClose()
-    reset()
+    reset(props.defaultValues)
   }
+
+  useEffect(() => {
+    reset(props.defaultValues || DEFAULT)
+  }, [props.defaultValues])
 
   return (
     <Dialog open={props.open} onClose={props.handleClose}>
@@ -98,7 +104,7 @@ export default function GuestModal(props: Props) {
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button variant="text" onClick={onClose}>
+          <Button variant="text" onClick={resetForm}>
             ביטול
           </Button>
           <Button variant="outlined" type="submit">

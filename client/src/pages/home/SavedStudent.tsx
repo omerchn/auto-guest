@@ -14,9 +14,16 @@ export default function SavedStudent(props: Props) {
 
   return (
     <div>
-      <Button variant="outlined" onClick={() => setOpen(true)}>
-        עריכת פרטי סטודנט
-      </Button>
+      {props.student ? (
+        <div>
+          <div>שלום, {props.student.fullName.split(' ')[0]}</div>
+          <Button onClick={() => setOpen(true)}>עריכת פרטי סטודנט</Button>
+        </div>
+      ) : (
+        <Button variant="outlined" onClick={() => setOpen(true)}>
+          הזנת פרטי סטודנט
+        </Button>
+      )}
       <StudentModal
         open={open}
         handleClose={() => setOpen(false)}

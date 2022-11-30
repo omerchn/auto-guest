@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react'
-
 // trpc
 import { StartInput, trpc } from '../../lib/trpc'
 
@@ -10,6 +8,7 @@ import SolveCaptcha from './SolveCaptcha'
 import SavedGuests from './SavedGuests'
 import SavedStudent from './SavedStudent'
 import { Student } from '../../components/StudentModal'
+import { useLocalStorage } from '../../hooks/storage'
 
 // const StartInputSchema = z.object({
 //   student: z.object({
@@ -50,7 +49,7 @@ const defaultData: StartInput = {
 }
 
 export default function Home() {
-  const [student, setStudent] = useState<Student>()
+  const [student, setStudent] = useLocalStorage<Student>('student')
   const { mutate, data, isLoading, error } = trpc.start.useMutation()
 
   const handleStart = () => {
@@ -69,9 +68,6 @@ export default function Home() {
         <>
           <SavedStudent student={student} setStudent={setStudent} />
           <SavedGuests onSubmit={(data) => console.log(data)} />
-          {/* <Button variant="contained" onClick={handleStart}>
-            התחלת בקשה
-          </Button> */}
         </>
       )}
     </div>
