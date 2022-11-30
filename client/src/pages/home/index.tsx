@@ -3,10 +3,9 @@ import { StartInput, trpc } from '../../lib/trpc'
 
 // components
 import CircularProgress from '@mui/material/CircularProgress'
-import Button from '@mui/material/Button'
 import Alert from '@mui/material/Alert'
 import SolveCaptcha from './SolveCaptcha'
-import SavedStartInput from './SavedStartInput'
+import SavedGuests from './SavedGuests'
 
 const defaultData: StartInput = {
   student: {
@@ -44,7 +43,7 @@ export default function Home() {
         <SolveCaptcha id={data.id} captchaImgPath={data.captchaImgPath} />
       ) : (
         <>
-          <SavedStartInput onSubmit={(data) => console.log(data)} />
+          <SavedGuests onSubmit={(data) => console.log(data)} />
           {/* <Button variant="contained" onClick={handleStart}>
             התחלת בקשה
           </Button> */}
