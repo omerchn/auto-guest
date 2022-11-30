@@ -1,6 +1,6 @@
 import { initTRPC } from '@trpc/server'
 import { z } from 'zod'
-import { solveCaptchaAndSubmit, start } from './pup'
+import { startRequest, solveCaptchaAndSubmit } from './guest-request'
 
 const t = initTRPC.create()
 
@@ -27,10 +27,10 @@ export const appRouter = t.router({
       })
     )
     .mutation(async ({ input }) => {
-      const pupId = await start(input)
+      const pageId = await startRequest(input)
       return {
-        id: pupId,
-        captchaImgPath: `/captchas/${pupId}.png`,
+        id: pageId,
+        captchaImgPath: `/captchas/${pageId}.png`,
       }
     }),
 

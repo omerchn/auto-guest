@@ -1,16 +1,4 @@
-import * as fs from 'fs'
-import { Browser, Page } from 'puppeteer'
-import { pupCache } from './pup'
-
-export const closePup = async (pupId: string, browser: Browser) => {
-  await browser.close()
-  delete pupCache[pupId]
-  try {
-    fs.unlink(`captchas/${pupId}.png`, (err) => err)
-  } catch (err) {
-    console.log(err)
-  }
-}
+import { Page } from 'puppeteer'
 
 export const getOptionValue = async (
   page: Page,

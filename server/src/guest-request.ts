@@ -1,13 +1,5 @@
-import puppeteer, { Browser, Page } from 'puppeteer'
-import { v4 as uuid } from 'uuid'
-import { closePup, getOptionIndex, getOptionValue } from './pup-utils'
-
-export const pupCache: {
-  [pupId: string]: {
-    browser: Browser
-    page: Page
-  }
-} = {}
+import { getOptionIndex, getOptionValue } from './puppeteer/utils'
+import { closePage, newPage, pageCache } from './puppeteer/page'
 
 export interface StartInput {
   student: {
@@ -28,28 +20,9 @@ export interface StartInput {
   }
 }
 
-export const start = async (input: StartInput) => {
+export const startRequest = async (input: StartInput) => {
   try {
-    const browser = await puppeteer.launch({
-      headless: true,
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-accelerated-2d-canvas',
-        '--no-first-run',
-        '--no-zygote',
-        '--single-process',
-        '--disable-gpu',
-      ],
-    })
-    const page = await browser.newPage()
-
-    const pupId = uuid()
-    pupCache[pupId] = {
-      browser,
-      page,
-    }
+    const { page, pageId } = await newPage()
 
     await page.goto('https://meonot.shikunbinui.com/')
 
@@ -142,52 +115,57 @@ export const start = async (input: StartInput) => {
     // Captcha
     await page.waitForSelector('.BDC_CaptchaImageDiv')
     const captchaEl = await page.$('.BDC_CaptchaImageDiv')
-    await captchaEl?.screenshot({ path: `captchas/${pupId}.png` })
+    await captchaEl?.screenshot({ path: `captchas/${pageId}.png` })
 
     // Auto close instance after 30 seconds
     setTimeout(() => {
-      closePup(pupId, browser)
+      closePage(pageId)
     }, 30000)
 
-    return pupId
+    return pageId
   } catch (err) {
-    console.log(err)
+    console.error(err)
     throw err
   }
 }
 
-export const solveCaptchaAndSubmit = async (pupId: string, answer: string) => {
-  const pup = pupCache[pupId]
-  if (!pup) {
-    throw 'puppeteer instance not found'
-  }
-  const { browser, page } = pup
-  await page.type('[name=CaptchaCodeTextBox]', answer)
-  await page.click('[name=Button1]')
-  await Promise.race([
-    page.waitForSelector('#lblResult'),
-    page.waitForSelector('#doneProgras'),
-  ])
-  const { color, msg } = await page.evaluate(() => {
-    const errorEl = document.getElementById('lblResult')
-    const successEl = document.getElementById('doneProgras')
-    if (errorEl) {
-      return {
-        color: errorEl.style.color,
-        msg: errorEl.textContent,
-      }
-    } else if (successEl) {
-      return {
-        color: successEl.style.color,
-        msg: successEl.textContent,
-      }
-    } else return {}
-  })
-  if (color === 'red') {
-    closePup(pupId, browser)
-    throw msg
-  } else if (color === 'green') {
-    closePup(pupId, browser)
-    return msg
+export const solveCaptchaAndSubmit = async (pageId: string, answer: string) => {
+  try {
+    const page = pageCache[pageId]
+    if (!page) {
+      throw 'page instance not found'
+    }
+    await page.type('[name=CaptchaCodeTextBox]', answer)
+    await page.click('[name=Button1]')
+    await Promise.race([
+      page.waitForSelector('#lblResult'),
+      page.waitForSelector('#doneProgras'),
+    ])
+    const { color, msg } = await page.evaluate(() => {
+      const errorEl = document.getElementById('lblResult')
+      const successEl = document.getElementById('doneProgras')
+      if (errorEl) {
+        return {
+          color: errorEl.style.color,
+          msg: errorEl.textContent,
+        }
+      } else if (successEl) {
+        return {
+          color: successEl.style.color,
+          msg: successEl.textContent,
+        }
+      } else return {}
+    })
+    if (color === 'red') {
+      closePage(pageId)
+      throw msg
+    } else if (color === 'green') {
+      closePage(pageId)
+      return msg
+    }
+    closePage(pageId)
+  } catch (err) {
+    console.error(err)
+    throw err
   }
 }
