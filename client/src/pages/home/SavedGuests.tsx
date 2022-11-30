@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useAutoAnimate } from '@formkit/auto-animate/react'
 
 // hooks
 import { useLocalStorage } from '../../hooks/storage'
@@ -16,6 +17,7 @@ interface Props {
 }
 
 export default function SavedGuests(props: Props) {
+  const [parent] = useAutoAnimate<HTMLDivElement>()
   const [modalOpen, setModalOpen] = useState(false)
   const [savedGuests, setSavedGuests] = useLocalStorage<Array<Guest>>('guests')
 
@@ -29,39 +31,41 @@ export default function SavedGuests(props: Props) {
 
   return (
     <div>
-      {savedGuests?.map((guest) => (
-        <Paper
-          key={guest.id}
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            margin: '.5em',
-          }}
-        >
-          <IconButton onClick={() => handleDelete(guest.id)}>
-            <DeleteOutlineRoundedIcon />
-          </IconButton>
-          <div
-            style={{
-              margin: '0 1em',
-              display: 'inline',
-            }}
-          >
-            {guest.fullName}
-          </div>
-          <Button
-            variant="contained"
-            disabled={props.disabled}
-            onClick={() => props.onSubmit(guest)}
+      <div ref={parent}>
+        {savedGuests?.map((guest) => (
+          <Paper
+            key={guest.id}
             sx={{
-              margin: '1em',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              margin: '.5em',
             }}
           >
-            פתיחת פנייה
-          </Button>
-        </Paper>
-      ))}
+            <IconButton onClick={() => handleDelete(guest.id)}>
+              <DeleteOutlineRoundedIcon />
+            </IconButton>
+            <div
+              style={{
+                margin: '0 1em',
+                display: 'inline',
+              }}
+            >
+              {guest.fullName}
+            </div>
+            <Button
+              variant="contained"
+              disabled={props.disabled}
+              onClick={() => props.onSubmit(guest)}
+              sx={{
+                margin: '1em',
+              }}
+            >
+              פתיחת פנייה
+            </Button>
+          </Paper>
+        ))}
+      </div>
       <Button
         variant="outlined"
         onClick={() => setModalOpen(true)}

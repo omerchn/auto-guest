@@ -13,17 +13,16 @@ interface Props {
 export default function CategorySelect(props: Props) {
   return (
     <FormControl error={!props.category} sx={{ marginBottom: '.5em' }}>
-      <InputLabel id="category">סוג הפנייה</InputLabel>
       <Select
+        variant="standard"
         value={props.category || ''}
         onChange={(e) => props.setCategory(e.target.value)}
         label="category"
-        labelId="category"
       >
         <MenuItem value="פניות בנושא מבקרים">פניות בנושא מבקרים</MenuItem>
         <MenuItem value="פניות בנושא לינה">פניות בנושא לינה</MenuItem>
       </Select>
-      {!props.category && <FormHelperText>יש להזין סוג הפנייה</FormHelperText>}
+      {!props.category && <FormHelperText>יש להזין סוג פנייה</FormHelperText>}
     </FormControl>
   )
 }

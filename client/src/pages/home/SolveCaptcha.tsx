@@ -1,6 +1,8 @@
 import { trpc } from '../../lib/trpc'
+import Fade from '@mui/material/Fade'
+import Box from '@mui/material/Box'
 import Alert from '@mui/material/Alert'
-import CircularProgress from '@mui/material/CircularProgress'
+import HashLoader from 'react-spinners/HashLoader'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
@@ -28,7 +30,7 @@ export default function SolveCaptcha(props: Props) {
   return (
     <>
       {isLoading ? (
-        <CircularProgress />
+        <HashLoader color="#3f51b5" />
       ) : error ? (
         <>
           <Alert severity="error">{error.message}</Alert>
@@ -44,37 +46,39 @@ export default function SolveCaptcha(props: Props) {
       ) : data ? (
         <Alert severity="success">{data}</Alert>
       ) : (
-        <>
-          <img src={apiUrl + props.captchaImgPath} />
-          <form
-            onSubmit={handleSubmit}
-            style={{
-              padding: '.5em',
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            <TextField
-              id="answer"
-              variant="standard"
-              dir="ltr"
-              sx={{
-                input: {
-                  textAlign: 'center',
-                },
-              }}
-            />
-            <Button
-              type="submit"
-              variant="outlined"
+        <Fade appear in timeout={200}>
+          <Box>
+            <img src={apiUrl + props.captchaImgPath} />
+            <form
+              onSubmit={handleSubmit}
               style={{
-                margin: '.5em',
+                padding: '.5em',
+                display: 'flex',
+                alignItems: 'center',
               }}
             >
-              שלח
-            </Button>
-          </form>
-        </>
+              <TextField
+                id="answer"
+                variant="standard"
+                dir="ltr"
+                sx={{
+                  input: {
+                    textAlign: 'center',
+                  },
+                }}
+              />
+              <Button
+                type="submit"
+                variant="outlined"
+                style={{
+                  margin: '.5em',
+                }}
+              >
+                שלח
+              </Button>
+            </form>
+          </Box>
+        </Fade>
       )}
     </>
   )

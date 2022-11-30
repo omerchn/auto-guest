@@ -5,7 +5,9 @@ import { trpc } from '../../lib/trpc'
 import { useLocalStorage } from '../../hooks/storage'
 
 // components
-import CircularProgress from '@mui/material/CircularProgress'
+import HashLoader from 'react-spinners/HashLoader'
+import Fade from '@mui/material/Fade'
+import Box from '@mui/material/Box'
 import Alert from '@mui/material/Alert'
 import IconButton from '@mui/material/IconButton'
 import LoopRounded from '@mui/icons-material/LoopRounded'
@@ -33,7 +35,11 @@ export default function Home() {
   return (
     <div className="home-page">
       {isLoading ? (
-        <CircularProgress />
+        <Fade appear in timeout={1000}>
+          <Box>
+            <HashLoader color="#3f51b5" />
+          </Box>
+        </Fade>
       ) : error ? (
         <>
           <Alert severity="error">{error.message}</Alert>
