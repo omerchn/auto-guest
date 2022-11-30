@@ -74,7 +74,7 @@ export default function SolveCaptcha(props: Props) {
                   margin: '.5em',
                 }}
               >
-                שלח
+                שליחה
               </Button>
             </form>
           </Box>
