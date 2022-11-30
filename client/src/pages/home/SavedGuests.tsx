@@ -58,7 +58,7 @@ export default function SavedGuests(props: Props) {
               margin: '1em',
             }}
           >
-            פתיחת בקשה
+            פתיחת פנייה
           </Button>
         </Paper>
       ))}
