@@ -9,16 +9,22 @@ interface Props {
 }
 
 export default function SavedGuests(props: Props) {
-  const [open, setOpen] = useState(false)
-  const handleClose = () => setOpen(false)
+  const [modalOpen, setModalOpen] = useState(false)
+  const [savedGuests, SavedGuests] = useState([])
+
+  const handleSubmit = (data: Guest) => {
+    console.log(data)
+  }
 
   return (
     <div>
-      <Button onClick={() => setOpen(true)}>start</Button>
+      <Button variant="outlined" onClick={() => setModalOpen(true)}>
+        הוספת אורח
+      </Button>
       <GuestModal
-        open={open}
-        handleClose={handleClose}
-        onSubmit={props.onSubmit}
+        open={modalOpen}
+        handleClose={() => setModalOpen(false)}
+        onSubmit={handleSubmit}
       />
     </div>
   )

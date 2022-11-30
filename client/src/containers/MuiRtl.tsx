@@ -9,6 +9,6 @@ const cacheRtl = createCache({
   stylisPlugins: [prefixer, rtlPlugin],
 })
 
-export default function RTL(props: { children: React.ReactNode }) {
+export default function MuiRtl(props: { children: React.ReactNode }) {
   return <CacheProvider value={cacheRtl}>{props.children}</CacheProvider>
 }

@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 
 // components
-import TextInput from './TextInput'
+import ControlledTextField from '../hook-form/ControlledTextField'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
@@ -12,29 +12,10 @@ import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogContentText from '@mui/material/DialogContentText'
 
-// const StartInputSchema = z.object({
-//   student: z.object({
-//     id: z.string().length(9, 'על הת.ז להכיל 9 תווים'),
-//     fullName: z.string(),
-//     phone: z.string(),
-//     dorm: z.enum(['מעונות איינשטיין', 'מעונות ברושים']),
-//     building: z.string(),
-//     floor: z.string(),
-//     apartmentNumber: z.string(),
-//     side: z.enum(['ימין', 'שמאל']),
-//   }),
-//   category: z.enum(['פניות בנושא מבקרים', 'פניות בנושא לינה']),
-//   guest: z.object({
-//     id: z.string().length(9, 'על הת.ז להכיל 9 תווים'),
-//     fullName: z.string().min(1, 'נדרש להזין שם מלא'),
-//     phone: z.string().min(1, 'נדרש להזין מספר טלפון'),
-//   }),
-// })
-
 const GuestSchema = z.object({
-  id: z.string().length(9, 'על הת.ז להכיל 9 תווים'),
-  fullName: z.string().min(1, 'נדרש להזין שם מלא'),
-  phone: z.string().min(1, 'נדרש להזין מספר טלפון'),
+  id: z.string().trim().length(9, 'נדרש להזין מספר ת.ז תקין'),
+  fullName: z.string().trim().min(1, 'נדרש להזין שם מלא'),
+  phone: z.string().trim().length(10, 'נדרש להזין מספר טלפון תקין'),
 })
 
 export type Guest = z.infer<typeof GuestSchema>
@@ -46,7 +27,7 @@ interface Props {
   handleClose: () => void
 }
 
-export default function InputModal(props: Props) {
+export default function GuestModal(props: Props) {
   const {
     handleSubmit,
     control,
@@ -67,6 +48,11 @@ export default function InputModal(props: Props) {
     reset()
   }
 
+  const onClose = () => {
+    props.handleClose()
+    reset()
+  }
+
   return (
     <Dialog open={props.open} onClose={props.handleClose}>
       <Box component="form" onSubmit={handleSubmit(onSubmit)}>
@@ -78,7 +64,7 @@ export default function InputModal(props: Props) {
               name="id"
               control={control}
               render={({ field }) => (
-                <TextInput
+                <ControlledTextField
                   type="number"
                   field={field}
                   label="ת.ז"
@@ -90,7 +76,7 @@ export default function InputModal(props: Props) {
               name="fullName"
               control={control}
               render={({ field }) => (
-                <TextInput
+                <ControlledTextField
                   field={field}
                   label="שם מלא"
                   error={errors.fullName}
@@ -101,7 +87,7 @@ export default function InputModal(props: Props) {
               name="phone"
               control={control}
               render={({ field }) => (
-                <TextInput
+                <ControlledTextField
                   type="number"
                   field={field}
                   label="טלפון"
@@ -112,7 +98,7 @@ export default function InputModal(props: Props) {
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button variant="text" onClick={props.handleClose}>
+          <Button variant="text" onClick={onClose}>
             ביטול
           </Button>
           <Button variant="outlined" type="submit">

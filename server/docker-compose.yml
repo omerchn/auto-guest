@@ -8,8 +8,6 @@ services:
       - 443:443
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
-    environment:
-      - DOMAIN=${DOMAIN:-localhost}
     depends_on:
       - server
     networks:

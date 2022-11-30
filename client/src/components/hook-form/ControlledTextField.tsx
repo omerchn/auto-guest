@@ -1,17 +1,17 @@
 import { HTMLInputTypeAttribute } from 'react'
-import { FieldError } from 'react-hook-form'
+import { ControllerRenderProps, FieldError } from 'react-hook-form'
 
 // components
 import TextField from '@mui/material/TextField'
 
 interface FieldProps {
-  field: object
   type?: HTMLInputTypeAttribute
+  field: ControllerRenderProps<any, any>
   label: string
   error: FieldError | undefined
 }
 
-export default function TextInput(props: FieldProps) {
+export default function ControlledTextField(props: FieldProps) {
   return (
     <TextField
       variant="standard"
