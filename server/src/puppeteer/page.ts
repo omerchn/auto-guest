@@ -20,9 +20,7 @@ export const newPage = async (): Promise<{ page: Page; pageId: string }> => {
 export const closePage = async (pageId: string) => {
   try {
     const page = pageCache[pageId]
-    if (!page) {
-      throw 'page instance not found'
-    }
+    if (!page) return
     await page.close()
     delete pageCache[pageId]
     fs.unlink(`captchas/${pageId}.png`, (err) => err)

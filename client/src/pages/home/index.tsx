@@ -10,6 +10,7 @@ import Fade from '@mui/material/Fade'
 import Box from '@mui/material/Box'
 import Alert from '@mui/material/Alert'
 import IconButton from '@mui/material/IconButton'
+import Tooltip from '@mui/material/Tooltip'
 import LoopRounded from '@mui/icons-material/LoopRounded'
 import SolveCaptcha from './SolveCaptcha'
 import SavedGuests from './SavedGuests'
@@ -33,7 +34,11 @@ export default function Home() {
   }
 
   return (
-    <div className="home-page">
+    <Box
+      sx={{
+        padding: '1em',
+      }}
+    >
       {isLoading ? (
         <Fade appear in timeout={1000}>
           <Box>
@@ -43,14 +48,16 @@ export default function Home() {
       ) : error ? (
         <>
           <Alert severity="error">{error.message}</Alert>
-          <IconButton
-            style={{
-              margin: '.5em',
-            }}
-            onClick={reset}
-          >
-            <LoopRounded />
-          </IconButton>
+          <Tooltip title="אתחול">
+            <IconButton
+              style={{
+                margin: '.5em',
+              }}
+              onClick={reset}
+            >
+              <LoopRounded />
+            </IconButton>
+          </Tooltip>
         </>
       ) : data ? (
         <SolveCaptcha
@@ -72,6 +79,6 @@ export default function Home() {
           )}
         </>
       )}
-    </div>
+    </Box>
   )
 }

@@ -6,6 +6,7 @@ import HashLoader from 'react-spinners/HashLoader'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
+import Tooltip from '@mui/material/Tooltip'
 import LoopRounded from '@mui/icons-material/LoopRounded'
 
 interface Props {
@@ -30,18 +31,22 @@ export default function SolveCaptcha(props: Props) {
   return (
     <>
       {isLoading ? (
-        <HashLoader color="#3f51b5" />
+        <Box>
+          <HashLoader color="#3f51b5" />
+        </Box>
       ) : error ? (
         <>
           <Alert severity="error">{error.message}</Alert>
-          <IconButton
-            style={{
-              margin: '.5em',
-            }}
-            onClick={props.reset}
-          >
-            <LoopRounded />
-          </IconButton>
+          <Tooltip title="אתחול">
+            <IconButton
+              style={{
+                margin: '.5em',
+              }}
+              onClick={props.reset}
+            >
+              <LoopRounded />
+            </IconButton>
+          </Tooltip>
         </>
       ) : data ? (
         <Alert severity="success">{data}</Alert>

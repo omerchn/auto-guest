@@ -1,13 +1,33 @@
 // pages
 import HomePage from './pages/home'
 
+// components
+import Box from '@mui/material/Box'
+import Alert from '@mui/material/Alert'
+import Typography from '@mui/material/Typography'
+
 // styles
 import './App.scss'
 
 export default function App() {
   return (
-    <div className="App">
+    <Box className="App">
+      <Alert
+        severity="info"
+        icon={false}
+        sx={{
+          width: 'fit-content',
+          display: 'flex',
+          justifyContent: 'center',
+          textAlign: 'center',
+          margin: '1em',
+        }}
+      >
+        <Typography color="primary">
+          אתר הפניות האוטומטיות של מעונות אוניברסיטת תל אביב
+        </Typography>
+      </Alert>
       <HomePage />
-    </div>
+    </Box>
   )
 }

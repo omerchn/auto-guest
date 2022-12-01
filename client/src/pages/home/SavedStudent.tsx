@@ -14,20 +14,26 @@ export default function SavedStudent(props: Props) {
   const [open, setOpen] = useState(false)
 
   return (
-    <Box
-      style={{
-        margin: '1em',
-      }}
-    >
+    <Box>
       {props.student ? (
-        <div>
-          <div>שלום, {props.student.fullName.split(' ')[0]}</div>
+        <Box
+          sx={{
+            marginBottom: '1em',
+          }}
+        >
+          <Box>שלום, {props.student.fullName.split(' ')[0]}</Box>
           <Button onClick={() => setOpen(true)}>עריכת פרטי סטודנט</Button>
-        </div>
+        </Box>
       ) : (
-        <Button variant="outlined" onClick={() => setOpen(true)}>
-          הזנת פרטי סטודנט
-        </Button>
+        <Box
+          sx={{
+            marginTop: '1em',
+          }}
+        >
+          <Button variant="outlined" onClick={() => setOpen(true)}>
+            הזנת פרטי סטודנט
+          </Button>
+        </Box>
       )}
       <StudentModal
         open={open}

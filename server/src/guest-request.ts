@@ -79,7 +79,6 @@ export const startRequest = async (input: StartInput) => {
       '[name=DropDownFaultCategory]',
       await getOptionValue(page, '[name=DropDownFaultCategory]', input.category)
     )
-    // await page.waitForNavigation()
     await page.waitForNetworkIdle()
 
     // ID
@@ -125,7 +124,7 @@ export const startRequest = async (input: StartInput) => {
     return pageId
   } catch (err) {
     console.error(err)
-    throw err
+    throw `אירעה שגיאה, יש לנסות שוב (${err})`
   }
 }
 
@@ -133,7 +132,7 @@ export const solveCaptchaAndSubmit = async (pageId: string, answer: string) => {
   try {
     const page = pageCache[pageId]
     if (!page) {
-      throw 'page instance not found'
+      throw 'עמוד נסגר אוטומטית, יש לנסות שוב'
     }
     await page.type('[name=CaptchaCodeTextBox]', answer)
     await page.click('[name=Button1]')
