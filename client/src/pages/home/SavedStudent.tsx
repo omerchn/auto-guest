@@ -18,7 +18,7 @@ export default function SavedStudent(props: Props) {
       {props.student ? (
         <Box
           sx={{
-            marginBottom: '1em',
+            margin: '1em 0',
           }}
         >
           <Box>שלום, {props.student.fullName.split(' ')[0]}</Box>

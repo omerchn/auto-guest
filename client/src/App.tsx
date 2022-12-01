@@ -17,8 +17,6 @@ export default function App() {
         icon={false}
         sx={{
           width: 'fit-content',
-          display: 'flex',
-          justifyContent: 'center',
           textAlign: 'center',
           margin: '1em',
         }}

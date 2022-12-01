@@ -2,8 +2,9 @@ import { trpc } from '../../lib/trpc'
 import Alert from '@mui/material/Alert'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
+import FormHelperText from '@mui/material/FormHelperText'
 import Loader from '../../components/general/Loader'
-import ResetAlert from './components/ResetAlert'
+import ErrorAlert from './components/ErrorAlert'
 import FadeIn from '../../containers/FadeIn'
 
 interface Props {
@@ -30,13 +31,21 @@ export default function SolveCaptcha(props: Props) {
       {isLoading ? (
         <Loader />
       ) : error ? (
-        <ResetAlert error={error} reset={props.reset} />
+        <ErrorAlert error={error} reset={props.reset} />
       ) : data ? (
         <FadeIn duration={200}>
           <Alert severity="success">{data}</Alert>
         </FadeIn>
       ) : (
         <>
+          <Alert
+            severity="warning"
+            sx={{
+              marginBottom: '1em',
+            }}
+          >
+            יש להזין קוד אבטחה
+          </Alert>
           <img src={apiUrl + props.captchaImgPath} />
           <form
             onSubmit={handleSubmit}

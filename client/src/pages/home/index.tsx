@@ -10,36 +10,32 @@ import SolveCaptcha from './SolveCaptcha'
 import SavedGuests from './SavedGuests'
 import SavedStudent from './SavedStudent'
 import { Student } from '../../components/StudentModal'
+import CategorySelect, { Category } from './CategorySelect'
 import { Guest } from '../../components/GuestModal'
-import CategorySelect from './CategorySelect'
 import Loader from '../../components/general/Loader'
 import FadeIn from '../../containers/FadeIn'
-import ResetAlert from './components/ResetAlert'
+import ErrorAlert from './components/ErrorAlert'
 
 export default function Home() {
   const [student, setStudent] = useLocalStorage<Student>('student')
-  const [category, setCategory] = useLocalStorage<string>('category')
+  const [category, setCategory] = useLocalStorage<Category>('category')
   const { mutate, data, isLoading, error, reset } = trpc.start.useMutation()
 
   const handleStart = (guest: Guest) => {
-    if (!student) return
+    if (!student || !category) return
     mutate({
       student,
+      category,
       guest,
-      category: 'פניות בנושא מבקרים',
     })
   }
 
   return (
-    <Box
-      sx={{
-        padding: '1em',
-      }}
-    >
+    <Box>
       {isLoading ? (
         <Loader />
       ) : error ? (
-        <ResetAlert error={error} reset={reset} />
+        <ErrorAlert error={error} reset={reset} />
       ) : data ? (
         <FadeIn duration={500}>
           <Box>

@@ -12,7 +12,7 @@ interface Props {
   reset: () => void
 }
 
-export default function ResetAlert(props: Props) {
+export default function ErrorAlert(props: Props) {
   return (
     <FadeIn duration={200}>
       <Alert severity="error">{props.error.message}</Alert>

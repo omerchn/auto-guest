@@ -4,9 +4,11 @@ import FormHelperText from '@mui/material/FormHelperText'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 
+export type Category = 'פניות בנושא מבקרים' | 'פניות בנושא לינה'
+
 interface Props {
-  category: string | undefined
-  setCategory: React.Dispatch<string | undefined>
+  category: Category | undefined
+  setCategory: React.Dispatch<Category | undefined>
 }
 
 export default function CategorySelect(props: Props) {
@@ -15,7 +17,7 @@ export default function CategorySelect(props: Props) {
       <Select
         variant="standard"
         value={props.category || ''}
-        onChange={(e) => props.setCategory(e.target.value)}
+        onChange={(e) => props.setCategory(e.target.value as Category)}
         label="category"
       >
         <MenuItem value="פניות בנושא מבקרים">פניות בנושא מבקרים</MenuItem>
