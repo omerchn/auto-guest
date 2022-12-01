@@ -22,7 +22,7 @@ export default function App() {
         }}
       >
         <Typography color="primary">
-          אתר הפניות האוטומטיות למעונות אוניברסיטת תל אביב
+          אתר האורח האוטומטי למעונות אוניברסיטת תל אביב
         </Typography>
       </Alert>
       <HomePage />
