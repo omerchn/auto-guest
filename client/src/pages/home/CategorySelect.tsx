@@ -13,7 +13,7 @@ interface Props {
 
 export default function CategorySelect(props: Props) {
   return (
-    <FormControl error={!props.category} sx={{ marginBottom: '.5em' }}>
+    <FormControl sx={{ marginBottom: '.5em' }}>
       <Select
         variant="standard"
         value={props.category || ''}
