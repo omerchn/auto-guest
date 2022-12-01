@@ -18,7 +18,7 @@ export default function App() {
         sx={{
           width: 'fit-content',
           textAlign: 'center',
-          margin: '1em',
+          margin: '1em 0',
         }}
       >
         <Typography color="primary">
