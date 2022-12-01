@@ -5,7 +5,7 @@ import Button from '@mui/material/Button'
 import FormHelperText from '@mui/material/FormHelperText'
 import Loader from '../../components/general/Loader'
 import ErrorAlert from './components/ErrorAlert'
-import FadeIn from '../../containers/FadeIn'
+import SuccessAlert from './components/SuccessAlert'
 
 interface Props {
   id: string
@@ -33,9 +33,7 @@ export default function SolveCaptcha(props: Props) {
       ) : error ? (
         <ErrorAlert error={error} reset={props.reset} />
       ) : data ? (
-        <FadeIn duration={200}>
-          <Alert severity="success">{data}</Alert>
-        </FadeIn>
+        <SuccessAlert message={data} reset={props.reset} />
       ) : (
         <>
           <Alert
@@ -49,6 +47,7 @@ export default function SolveCaptcha(props: Props) {
           <img src={apiUrl + props.captchaImgPath} />
           <form
             onSubmit={handleSubmit}
+            autoComplete="off"
             style={{
               padding: '.5em',
               display: 'flex',
