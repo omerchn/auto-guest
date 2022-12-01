@@ -1,3 +1,4 @@
+import React, { useEffect } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -12,7 +13,8 @@ import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogContentText from '@mui/material/DialogContentText'
 import ControlledSelect from '../hook-form/ControlledSelect'
-import { useEffect } from 'react'
+import Grow from '@mui/material/Grow'
+import { TransitionProps } from '@mui/material/transitions'
 
 const StudentSchema = z.object({
   id: z.string().trim().length(9, 'יש להזין מספר ת.ז תקין'),
@@ -76,7 +78,11 @@ export default function StudentModal(props: Props) {
   }, [props.defaultValues])
 
   return (
-    <Dialog open={props.open} onClose={props.handleClose}>
+    <Dialog
+      open={props.open}
+      onClose={props.handleClose}
+      TransitionComponent={Transition}
+    >
       <Box component="form" onSubmit={handleSubmit(onSubmit)}>
         <DialogTitle>שמירת סטודנט</DialogTitle>
         <DialogContent>
@@ -190,3 +196,12 @@ export default function StudentModal(props: Props) {
     </Dialog>
   )
 }
+
+const Transition = React.forwardRef(function Transition(
+  props: TransitionProps & {
+    children: React.ReactElement<any, any>
+  },
+  ref: React.Ref<unknown>
+) {
+  return <Grow ref={ref} {...props} />
+})
