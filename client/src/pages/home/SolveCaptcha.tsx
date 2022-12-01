@@ -1,13 +1,10 @@
 import { trpc } from '../../lib/trpc'
-import Fade from '@mui/material/Fade'
-import Box from '@mui/material/Box'
 import Alert from '@mui/material/Alert'
-import HashLoader from 'react-spinners/HashLoader'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
-import IconButton from '@mui/material/IconButton'
-import Tooltip from '@mui/material/Tooltip'
-import LoopRounded from '@mui/icons-material/LoopRounded'
+import Loader from '../../components/general/Loader'
+import ResetAlert from './components/ResetAlert'
+import FadeIn from '../../containers/FadeIn'
 
 interface Props {
   id: string
@@ -31,59 +28,45 @@ export default function SolveCaptcha(props: Props) {
   return (
     <>
       {isLoading ? (
-        <Box>
-          <HashLoader color="#3f51b5" />
-        </Box>
+        <Loader />
       ) : error ? (
+        <ResetAlert error={error} reset={props.reset} />
+      ) : data ? (
+        <FadeIn duration={200}>
+          <Alert severity="success">{data}</Alert>
+        </FadeIn>
+      ) : (
         <>
-          <Alert severity="error">{error.message}</Alert>
-          <Tooltip title="אתחול">
-            <IconButton
+          <img src={apiUrl + props.captchaImgPath} />
+          <form
+            onSubmit={handleSubmit}
+            style={{
+              padding: '.5em',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <TextField
+              id="answer"
+              variant="standard"
+              dir="ltr"
+              sx={{
+                input: {
+                  textAlign: 'center',
+                },
+              }}
+            />
+            <Button
+              type="submit"
+              variant="outlined"
               style={{
                 margin: '.5em',
               }}
-              onClick={props.reset}
             >
-              <LoopRounded />
-            </IconButton>
-          </Tooltip>
+              שליחה
+            </Button>
+          </form>
         </>
-      ) : data ? (
-        <Alert severity="success">{data}</Alert>
-      ) : (
-        <Fade appear in timeout={200}>
-          <Box>
-            <img src={apiUrl + props.captchaImgPath} />
-            <form
-              onSubmit={handleSubmit}
-              style={{
-                padding: '.5em',
-                display: 'flex',
-                alignItems: 'center',
-              }}
-            >
-              <TextField
-                id="answer"
-                variant="standard"
-                dir="ltr"
-                sx={{
-                  input: {
-                    textAlign: 'center',
-                  },
-                }}
-              />
-              <Button
-                type="submit"
-                variant="outlined"
-                style={{
-                  margin: '.5em',
-                }}
-              >
-                שליחה
-              </Button>
-            </form>
-          </Box>
-        </Fade>
       )}
     </>
   )

@@ -5,19 +5,16 @@ import { trpc } from '../../lib/trpc'
 import { useLocalStorage } from '../../hooks/storage'
 
 // components
-import HashLoader from 'react-spinners/HashLoader'
-import Fade from '@mui/material/Fade'
 import Box from '@mui/material/Box'
-import Alert from '@mui/material/Alert'
-import IconButton from '@mui/material/IconButton'
-import Tooltip from '@mui/material/Tooltip'
-import LoopRounded from '@mui/icons-material/LoopRounded'
 import SolveCaptcha from './SolveCaptcha'
 import SavedGuests from './SavedGuests'
 import SavedStudent from './SavedStudent'
 import { Student } from '../../components/StudentModal'
 import { Guest } from '../../components/GuestModal'
 import CategorySelect from './CategorySelect'
+import Loader from '../../components/general/Loader'
+import FadeIn from '../../containers/FadeIn'
+import ResetAlert from './components/ResetAlert'
 
 export default function Home() {
   const [student, setStudent] = useLocalStorage<Student>('student')
@@ -40,44 +37,34 @@ export default function Home() {
       }}
     >
       {isLoading ? (
-        <Fade appear in timeout={1000}>
-          <Box>
-            <HashLoader color="#3f51b5" />
-          </Box>
-        </Fade>
+        <Loader />
       ) : error ? (
-        <>
-          <Alert severity="error">{error.message}</Alert>
-          <Tooltip title="אתחול">
-            <IconButton
-              style={{
-                margin: '.5em',
-              }}
-              onClick={reset}
-            >
-              <LoopRounded />
-            </IconButton>
-          </Tooltip>
-        </>
+        <ResetAlert error={error} reset={reset} />
       ) : data ? (
-        <SolveCaptcha
-          id={data.id}
-          captchaImgPath={data.captchaImgPath}
-          reset={reset}
-        />
+        <FadeIn duration={500}>
+          <Box>
+            <SolveCaptcha
+              id={data.id}
+              captchaImgPath={data.captchaImgPath}
+              reset={reset}
+            />
+          </Box>
+        </FadeIn>
       ) : (
-        <>
-          <SavedStudent student={student} setStudent={setStudent} />
-          {student && (
-            <>
-              <CategorySelect category={category} setCategory={setCategory} />
-              <SavedGuests
-                onSubmit={handleStart}
-                disabled={!student || !category}
-              />
-            </>
-          )}
-        </>
+        <FadeIn duration={500}>
+          <Box>
+            <SavedStudent student={student} setStudent={setStudent} />
+            {student && (
+              <>
+                <CategorySelect category={category} setCategory={setCategory} />
+                <SavedGuests
+                  onSubmit={handleStart}
+                  disabled={!student || !category}
+                />
+              </>
+            )}
+          </Box>
+        </FadeIn>
       )}
     </Box>
   )
