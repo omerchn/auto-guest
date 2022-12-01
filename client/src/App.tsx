@@ -24,7 +24,7 @@ export default function App() {
         }}
       >
         <Typography color="primary">
-          אתר הפניות האוטומטיות של מעונות אוניברסיטת תל אביב
+          אתר הפניות האוטומטיות למעונות אוניברסיטת תל אביב
         </Typography>
       </Alert>
       <HomePage />

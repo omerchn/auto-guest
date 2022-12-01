@@ -25,11 +25,7 @@ export default function SavedStudent(props: Props) {
           <Button onClick={() => setOpen(true)}>עריכת פרטי סטודנט</Button>
         </Box>
       ) : (
-        <Box
-          sx={{
-            marginTop: '1em',
-          }}
-        >
+        <Box>
           <Button variant="outlined" onClick={() => setOpen(true)}>
             הזנת פרטי סטודנט
           </Button>
