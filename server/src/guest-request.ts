@@ -119,7 +119,7 @@ export const startRequest = async (input: StartInput) => {
     // Auto close instance after 30 seconds
     setTimeout(() => {
       closePage(pageId)
-    }, 30000)
+    }, 30 * 1000)
 
     return pageId
   } catch (err) {

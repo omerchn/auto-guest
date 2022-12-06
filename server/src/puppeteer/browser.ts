@@ -3,7 +3,7 @@ import puppeteer, { Browser } from 'puppeteer'
 let browser: Browser | null = null
 
 export const getBrowser = async (): Promise<Browser> => {
-  if (!browser)
+  if (!browser) {
     browser = await puppeteer.launch({
       headless: true,
       args: [
@@ -17,5 +17,14 @@ export const getBrowser = async (): Promise<Browser> => {
         '--disable-gpu',
       ],
     })
+
+    // Auto close browser after 5 minutes
+    setTimeout(() => {
+      browser?.close().then(() => {
+        console.log('browser closed')
+      })
+      browser = null
+    }, 5 * 60 * 1000)
+  }
   return browser
 }
