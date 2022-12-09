@@ -20,8 +20,8 @@ export default function CategorySelect(props: Props) {
         onChange={(e) => props.setCategory(e.target.value as Category)}
         label="category"
       >
-        <MenuItem value="פניות בנושא מבקרים">פניות בנושא מבקרים</MenuItem>
-        <MenuItem value="פניות בנושא לינה">פניות בנושא לינה</MenuItem>
+        <MenuItem value="פניות בנושא מבקרים">פניית ביקור</MenuItem>
+        <MenuItem value="פניות בנושא לינה">פניית לינה</MenuItem>
       </Select>
       {!props.category && <FormHelperText>יש להזין סוג פנייה</FormHelperText>}
     </FormControl>
