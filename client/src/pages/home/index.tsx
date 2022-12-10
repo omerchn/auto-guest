@@ -14,7 +14,7 @@ import CategorySelect, { Category } from './CategorySelect'
 import { Guest } from '../../components/GuestModal'
 import Loader from '../../components/general/Loader'
 import FadeIn from '../../containers/FadeIn'
-import ErrorAlert from './components/ErrorAlert'
+import ErrorAlert from '../../components/general/ErrorAlert'
 
 export default function Home() {
   const [student, setStudent] = useLocalStorage<Student>('student')
@@ -33,7 +33,7 @@ export default function Home() {
   return (
     <Box>
       {isLoading ? (
-        <Loader />
+        <Loader message="ממלא טופס, נא להמתין.." />
       ) : error ? (
         <ErrorAlert error={error} reset={reset} />
       ) : data ? (

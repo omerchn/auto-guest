@@ -1,18 +1,35 @@
-import { HashLoader } from 'react-spinners'
+import { GridLoader } from 'react-spinners'
 
 // components
 import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
 import FadeIn from '../../containers/FadeIn'
 
-export default function Loader() {
+interface Props {
+  message?: string
+}
+
+export default function Loader(props: Props) {
   return (
     <FadeIn duration={1000}>
       <Box
         sx={{
-          margin: '1em 0',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
         }}
       >
-        <HashLoader color="#3f51b5" />
+        {props.message && (
+          <Typography
+            sx={{
+              color: '#3f51b5',
+              marginBottom: '1em',
+            }}
+          >
+            {props.message}
+          </Typography>
+        )}
+        <GridLoader color="#3f51b5" />
       </Box>
     </FadeIn>
   )

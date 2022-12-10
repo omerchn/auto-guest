@@ -2,10 +2,9 @@ import { trpc } from '../../lib/trpc'
 import Alert from '@mui/material/Alert'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
-import FormHelperText from '@mui/material/FormHelperText'
 import Loader from '../../components/general/Loader'
-import ErrorAlert from './components/ErrorAlert'
-import SuccessAlert from './components/SuccessAlert'
+import ErrorAlert from '../../components/general/ErrorAlert'
+import SuccessAlert from '../../components/general/SuccessAlert'
 
 interface Props {
   id: string
@@ -29,7 +28,7 @@ export default function SolveCaptcha(props: Props) {
   return (
     <>
       {isLoading ? (
-        <Loader />
+        <Loader message="מזין קוד.." />
       ) : error ? (
         <ErrorAlert error={error} reset={props.reset} />
       ) : data ? (

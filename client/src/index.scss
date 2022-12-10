@@ -2,10 +2,6 @@
   font-family: 'valera';
   src: url(../fonts/valera.ttf);
 }
-@font-face {
-  font-family: 'patchSans';
-  src: url(../fonts/PatchSans.ttf);
-}
 
 * {
   font-family: 'valera' !important;
@@ -23,5 +19,6 @@
 body {
   direction: rtl;
   margin: 0;
+  min-height: 100vh;
   background-color: #0085ff08;
 }
