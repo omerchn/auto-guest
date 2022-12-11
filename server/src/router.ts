@@ -1,6 +1,7 @@
 import { initTRPC } from '@trpc/server'
 import { z } from 'zod'
 import { startRequest, solveCaptchaAndSubmit } from './guest-request'
+import { createRequest, solveCaptcha } from './guest-request/main'
 
 const t = initTRPC.create()
 
@@ -27,10 +28,11 @@ export const appRouter = t.router({
       })
     )
     .mutation(async ({ input }) => {
-      const pageId = await startRequest(input)
+      // const id = await startRequest(input)
+      const id = await createRequest(input)
       return {
-        id: pageId,
-        captchaImgPath: `/captchas/${pageId}.png`,
+        id,
+        captchaImgPath: `/captchas/${id}.png`,
       }
     }),
 
@@ -42,7 +44,8 @@ export const appRouter = t.router({
       })
     )
     .mutation(async ({ input }) => {
-      const msg = await solveCaptchaAndSubmit(input.id, input.answer)
+      // const msg = await solveCaptchaAndSubmit(input.id, input.answer)
+      const msg = await solveCaptcha(input.id, input.answer)
       return msg
     }),
 })
