@@ -88,7 +88,7 @@ export default function SavedGuests(props: Props) {
       </Button>
       <GuestModal
         open={modalOpen}
-        handleClose={() => setModalOpen(false)}
+        onClose={() => setModalOpen(false)}
         onSubmit={handleSubmit}
       />
     </Box>

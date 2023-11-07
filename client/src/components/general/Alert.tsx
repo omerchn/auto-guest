@@ -1,28 +1,28 @@
-import { TRPCClientErrorBase } from '@trpc/client'
-
 // components
-import Alert from '@mui/material/Alert'
+import MuiAlert, { AlertColor } from '@mui/material/Alert'
 import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
 import LoopRounded from '@mui/icons-material/LoopRounded'
 import FadeIn from '../../containers/FadeIn'
 
 interface Props {
-  error: TRPCClientErrorBase<any>
-  reset?: () => void
+  message: string
+  severity: AlertColor
+  onReset?: () => void
 }
 
-export default function ErrorAlert(props: Props) {
+export default function Alert(props: Props) {
+  console.log(props)
   return (
     <FadeIn duration={200}>
-      <Alert severity="error">{props.error.message}</Alert>
-      {props.reset && (
+      <MuiAlert severity={props.severity}>{props.message}</MuiAlert>
+      {props.onReset && (
         <Tooltip title="אתחול">
           <IconButton
             style={{
               margin: '.5em',
             }}
-            onClick={props.reset}
+            onClick={props.onReset}
           >
             <LoopRounded />
           </IconButton>

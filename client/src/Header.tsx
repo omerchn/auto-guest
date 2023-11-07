@@ -16,7 +16,7 @@ export default function Header() {
         sx={{
           marginBottom: '-.2em',
           color: 'transparent',
-          '-webkit-text-stroke': `1px ${headerAccent}`,
+          WebkitTextStroke: `1px ${headerAccent}`,
         }}
         variant="h4"
       >

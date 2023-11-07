@@ -1,10 +1,9 @@
 import React, { useEffect } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
 
 // components
-import ControlledTextField from '../hook-form/ControlledTextField'
+import ControlledTextField from '../form/ControlledTextField'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
@@ -12,183 +11,179 @@ import DialogTitle from '@mui/material/DialogTitle'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogContentText from '@mui/material/DialogContentText'
-import ControlledSelect from '../hook-form/ControlledSelect'
+import ControlledSelect from '../form/ControlledSelect'
 import Grow from '@mui/material/Grow'
 import { TransitionProps } from '@mui/material/transitions'
-
-const StudentSchema = z.object({
-  id: z.string().trim().length(9, 'יש להזין מספר ת.ז תקין'),
-  fullName: z.string().trim().min(1, 'יש להזין שם מלא'),
-  phone: z.string().trim().length(10, 'יש להזין מספר טלפון תקין'),
-  dorm: z.enum(['מעונות איינשטיין', 'מעונות ברושים'], {
-    required_error: 'יש לבחור מעון',
-  }),
-  building: z
-    .string()
-    .trim()
-    .length(1, 'יש להזין מזהה בניין תקין')
-    .transform((val) => val.toUpperCase()),
-  floor: z.string().trim().min(1, 'יש להזין קומה'),
-  apartmentNumber: z.string().trim().min(1, 'יש להזין מספר דירה'),
-  side: z.enum(['ימין', 'שמאל'], { required_error: 'יש לבחור צד' }),
-})
-
-export type Student = z.infer<typeof StudentSchema>
-
-export const DEFAULT = {
-  id: '',
-  fullName: '',
-  phone: '',
-  dorm: undefined,
-  building: '',
-  floor: '',
-  apartmentNumber: '',
-  side: undefined,
-}
+import { useStudentOptions } from '../../hooks/useStudentOptions'
+import { Student, StudentSchema } from './types'
+import { DEFAULT } from './consts'
+import { useDocumentState } from '../../hooks/document-state'
 
 interface Props {
   defaultValues?: Student
-  onSubmit: (data: Student) => void
   open: boolean
-  handleClose: () => void
+  onClose: () => void
+  onSubmit: (student: Student) => void
 }
 
 export default function StudentModal(props: Props) {
-  const {
-    handleSubmit,
-    control,
-    formState: { errors },
-    reset,
-  } = useForm<Student>({
+  const form = useForm<Student>({
     resolver: zodResolver(StudentSchema),
+    mode: 'onBlur',
   })
 
-  const onSubmit: SubmitHandler<Student> = (data) => {
-    props.onSubmit(data)
-    resetForm()
+  const { resetSubToMain, mergeSubToMain } = useDocumentState()
+  const { options, isFetching, setValues, resetOptions } = useStudentOptions()
+  console.log(options)
+
+  const handleSelectChange = (key: keyof Student, value: string) => {
+    setValues({ [key]: value })
   }
 
-  const resetForm = () => {
-    props.handleClose()
-    reset(props.defaultValues)
+  const handleSubmit: SubmitHandler<Student> = (data) => {
+    mergeSubToMain()
+    resetAndClose()
+    props.onSubmit(data)
+  }
+
+  const resetAndClose = () => {
+    resetSubToMain()
+    resetOptions()
+    form.reset(props.defaultValues)
+    props.onClose()
   }
 
   useEffect(() => {
-    reset(props.defaultValues || DEFAULT)
+    form.reset(props.defaultValues || DEFAULT)
   }, [props.defaultValues])
 
   return (
     <Dialog
       open={props.open}
-      onClose={props.handleClose}
+      onClose={props.onClose}
       TransitionComponent={Transition}
     >
-      <Box component="form" onSubmit={handleSubmit(onSubmit)}>
+      <Box component="form" onSubmit={form.handleSubmit(handleSubmit)}>
         <DialogTitle>שמירת סטודנט</DialogTitle>
         <DialogContent>
           <DialogContentText>נא להזין פרטי סטודנט</DialogContentText>
           <Box display="flex" flexDirection="column">
             <Controller
               name="id"
-              control={control}
+              control={form.control}
               render={({ field }) => (
                 <ControlledTextField
                   type="number"
                   field={field}
                   label="ת.ז"
-                  error={errors.id}
+                  error={form.formState.errors.id}
                 />
               )}
             />
             <Controller
               name="fullName"
-              control={control}
+              control={form.control}
               render={({ field }) => (
                 <ControlledTextField
                   field={field}
                   label="שם מלא"
-                  error={errors.fullName}
+                  error={form.formState.errors.fullName}
                 />
               )}
             />
             <Controller
               name="phone"
-              control={control}
+              control={form.control}
               render={({ field }) => (
                 <ControlledTextField
                   type="number"
                   field={field}
                   label="טלפון"
-                  error={errors.phone}
+                  error={form.formState.errors.phone}
                 />
               )}
             />
             <Controller
               name="dorm"
-              control={control}
+              control={form.control}
               render={({ field }) => (
                 <ControlledSelect
-                  values={['מעונות איינשטיין', 'מעונות ברושים']}
+                  options={options?.dorm ?? []}
                   field={field}
                   label="מעון"
-                  error={errors.dorm}
+                  error={form.formState.errors.dorm}
+                  onChange={handleSelectChange}
+                  isLoading={isFetching}
                 />
               )}
             />
             <Controller
               name="building"
-              control={control}
+              control={form.control}
               render={({ field }) => (
-                <ControlledTextField
+                <ControlledSelect
+                  options={options?.building ?? []}
                   field={field}
                   label="בניין"
-                  error={errors.building}
+                  error={form.formState.errors.building}
+                  onChange={handleSelectChange}
+                  isLoading={isFetching}
                 />
               )}
             />
             <Controller
               name="floor"
-              control={control}
+              control={form.control}
               render={({ field }) => (
-                <ControlledTextField
-                  type="number"
+                <ControlledSelect
+                  options={options?.floor ?? []}
                   field={field}
                   label="קומה"
-                  error={errors.floor}
+                  error={form.formState.errors.floor}
+                  onChange={handleSelectChange}
+                  isLoading={isFetching}
                 />
               )}
             />
             <Controller
-              name="apartmentNumber"
-              control={control}
+              name="unit"
+              control={form.control}
               render={({ field }) => (
-                <ControlledTextField
-                  type="number"
+                <ControlledSelect
+                  options={options?.unit ?? []}
                   field={field}
                   label="מספר דירה"
-                  error={errors.apartmentNumber}
+                  error={form.formState.errors.unit}
+                  onChange={handleSelectChange}
+                  isLoading={isFetching}
                 />
               )}
             />
             <Controller
               name="side"
-              control={control}
+              control={form.control}
               render={({ field }) => (
                 <ControlledSelect
-                  values={['ימין', 'שמאל']}
+                  options={options?.side ?? []}
                   field={field}
                   label="צד"
-                  error={errors.side}
+                  error={form.formState.errors.side}
+                  onChange={handleSelectChange}
+                  isLoading={isFetching}
                 />
               )}
             />
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button variant="text" onClick={resetForm}>
+          <Button variant="text" onClick={resetAndClose}>
             ביטול
           </Button>
-          <Button variant="outlined" type="submit">
+          <Button
+            variant="outlined"
+            type="submit"
+            disabled={!form.formState.isDirty}
+          >
             שמירה
           </Button>
         </DialogActions>

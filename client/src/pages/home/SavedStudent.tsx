@@ -3,15 +3,16 @@ import { useState } from 'react'
 // components
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
-import StudentModal, { Student } from '../../components/StudentModal'
+import StudentModal from '../../components/StudentModal'
+import { Student } from '../../components/StudentModal/types'
 
 interface Props {
   student: Student | undefined
-  setStudent: React.Dispatch<React.SetStateAction<Student | undefined>>
+  onChange: (student: Student) => void
 }
 
 export default function SavedStudent(props: Props) {
-  const [open, setOpen] = useState(false)
+  const [ModalOpen, setModalOpen] = useState(false)
 
   return (
     <Box>
@@ -23,19 +24,19 @@ export default function SavedStudent(props: Props) {
           }}
         >
           <Box>שלום, {props.student.fullName.split(' ')[0]}</Box>
-          <Button onClick={() => setOpen(true)}>עריכת פרטי סטודנט</Button>
+          <Button onClick={() => setModalOpen(true)}>עריכת פרטי סטודנט</Button>
         </Box>
       ) : (
         <Box>
-          <Button variant="outlined" onClick={() => setOpen(true)}>
+          <Button variant="outlined" onClick={() => setModalOpen(true)}>
             הזנת פרטי סטודנט
           </Button>
         </Box>
       )}
       <StudentModal
-        open={open}
-        handleClose={() => setOpen(false)}
-        onSubmit={(data) => props.setStudent(data)}
+        open={ModalOpen}
+        onClose={() => setModalOpen(false)}
+        onSubmit={props.onChange}
         defaultValues={props.student}
       />
     </Box>

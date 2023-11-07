@@ -9,17 +9,17 @@ import Box from '@mui/material/Box'
 import SolveCaptcha from './SolveCaptcha'
 import SavedGuests from './SavedGuests'
 import SavedStudent from './SavedStudent'
-import { Student } from '../../components/StudentModal'
 import CategorySelect, { Category } from './CategorySelect'
 import { Guest } from '../../components/GuestModal'
 import Loader from '../../components/general/Loader'
 import FadeIn from '../../containers/FadeIn'
-import ErrorAlert from '../../components/general/ErrorAlert'
+import Alert from '../../components/general/Alert'
+import { Student } from '../../components/StudentModal/types'
 
 export default function Home() {
   const [student, setStudent] = useLocalStorage<Student>('student')
   const [category, setCategory] = useLocalStorage<Category>('category')
-  const { mutate, data, isLoading, error, reset } = trpc.start.useMutation()
+  const { mutate, data, isLoading, error, reset } = trpc.open.useMutation()
 
   const handleStart = (guest: Guest) => {
     if (!student || !category) return
@@ -30,38 +30,52 @@ export default function Home() {
     })
   }
 
-  return (
-    <Box>
-      {isLoading ? (
+  if (error) {
+    return (
+      <Box>
+        <Alert severity="error" message={error.message} onReset={reset} />
+      </Box>
+    )
+  }
+
+  if (isLoading) {
+    return (
+      <Box>
         <Loader message="ממלא טופס, נא להמתין.." />
-      ) : error ? (
-        <ErrorAlert error={error} reset={reset} />
-      ) : data ? (
+      </Box>
+    )
+  }
+
+  if (data) {
+    return (
+      <Box>
         <FadeIn duration={500}>
           <Box>
             <SolveCaptcha
-              id={data.id}
+              pageId={data.pageId}
               captchaImgPath={data.captchaImgPath}
-              reset={reset}
+              onReset={reset}
             />
           </Box>
         </FadeIn>
-      ) : (
-        <FadeIn duration={500}>
-          <Box>
-            <SavedStudent student={student} setStudent={setStudent} />
-            {student && (
-              <>
-                <CategorySelect category={category} setCategory={setCategory} />
-                <SavedGuests
-                  onSubmit={handleStart}
-                  disabled={!student || !category}
-                />
-              </>
-            )}
-          </Box>
-        </FadeIn>
-      )}
-    </Box>
+      </Box>
+    )
+  }
+
+  return (
+    <FadeIn duration={500}>
+      <Box>
+        <SavedStudent student={student} onChange={setStudent} />
+        {student && (
+          <>
+            <CategorySelect category={category} onChange={setCategory} />
+            <SavedGuests
+              onSubmit={handleStart}
+              disabled={!student || !category}
+            />
+          </>
+        )}
+      </Box>
+    </FadeIn>
   )
 }

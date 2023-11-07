@@ -3,41 +3,65 @@ import { Page } from 'puppeteer'
 export const getOptionValue = async (
   page: Page,
   selectSelector: string,
-  optionValue: string
+  optionText: string
 ) => {
   const value = await page.evaluate(
-    (selectSelector, optionValue) => {
+    (selectSelector, optionText) => {
       const options = Array.from(
         document.querySelector(selectSelector)!.querySelectorAll('option')
       )
-      return options.find((opt) => opt.textContent === optionValue)?.value
+      return options.find((opt) => opt.textContent === optionText)?.value
     },
     selectSelector,
-    optionValue
+    optionText
   )
   if (!value)
-    throw `Option ${optionValue} not found for selector ${selectSelector}`
+    throw `Option ${optionText} not found for selector ${selectSelector}`
   return value
 }
 
-export const getOptionIndex = async (
+export const getLiIndex = async (
   page: Page,
-  selectSelector: string,
-  optionValue: string
+  ulSelector: string,
+  liText: string
 ) => {
-  const optionIndex = await page.evaluate(
-    (selectSelector, optionValue) => {
+  const liIndex = await page.evaluate(
+    (ulSelector, liText) => {
       const options = Array.from(
-        document.querySelector(selectSelector)!.querySelectorAll('li')
+        document.querySelector(ulSelector)!.querySelectorAll('li')
       )
-      const option = options.find((opt) => opt.textContent === optionValue)
+      const option = options.find((opt) => opt.textContent === liText)
       if (!option) return undefined
       return options.indexOf(option) + 1
     },
-    selectSelector,
-    optionValue
+    ulSelector,
+    liText
   )
-  if (!optionIndex)
-    throw `Option ${optionValue} not found for selector ${selectSelector}`
-  return optionIndex
+  if (!liIndex) throw `Option ${liText} not found for selector ${ulSelector}`
+  return liIndex
+}
+
+export const typeInput = async (
+  page: Page,
+  input: {
+    name: string
+    value: string
+  }
+) => {
+  const selector = `[name=${input.name}]`
+  await page.waitForSelector(selector)
+  await page.type(selector, input.value)
+}
+
+export const selectInput = async (
+  page: Page,
+  input: {
+    name: string
+    value: string
+  }
+) => {
+  const selector = `[name=${input.name}]`
+  await page.waitForSelector(selector)
+  const option = await getOptionValue(page, selector, input.value)
+  await page.select(selector, option)
 }

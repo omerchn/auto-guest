@@ -1,18 +1,15 @@
-import { trpc } from '../../lib/trpc'
-import Alert from '@mui/material/Alert'
+import { trpc, apiUrl } from '../../lib/trpc'
+import MuiAlert from '@mui/material/Alert'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import Loader from '../../components/general/Loader'
-import ErrorAlert from '../../components/general/ErrorAlert'
-import SuccessAlert from '../../components/general/SuccessAlert'
+import Alert from '../../components/general/Alert'
 
 interface Props {
-  id: string
+  pageId: string
   captchaImgPath: string
-  reset: () => void
+  onReset: () => void
 }
-
-const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:4000'
 
 export default function SolveCaptcha(props: Props) {
   const { mutate, isLoading, error, data } = trpc.solve.useMutation()
@@ -22,59 +19,80 @@ export default function SolveCaptcha(props: Props) {
     const answer = (
       e.currentTarget.querySelector('#answer') as HTMLInputElement
     ).value
-    mutate({ id: props.id, answer })
+    mutate({ pageId: props.pageId, answer })
+  }
+
+  if (error) {
+    return (
+      <Alert severity="error" message={error.message} onReset={props.onReset} />
+    )
+  }
+
+  if (isLoading) {
+    return <Loader message="מזין קוד.." />
+  }
+
+  if (data) {
+    if (data.type === 'success') {
+      return (
+        <Alert
+          severity="success"
+          message={data.message}
+          onReset={props.onReset}
+        />
+      )
+    }
+    if (data.type === 'failure') {
+      return (
+        <Alert
+          severity="warning"
+          message={data.message}
+          onReset={props.onReset}
+        />
+      )
+    }
   }
 
   return (
     <>
-      {isLoading ? (
-        <Loader message="מזין קוד.." />
-      ) : error ? (
-        <ErrorAlert error={error} reset={props.reset} />
-      ) : data ? (
-        <SuccessAlert message={data} reset={props.reset} />
-      ) : (
-        <>
-          <Alert
-            severity="warning"
-            sx={{
-              marginBottom: '1em',
-            }}
-          >
-            יש להזין קוד אבטחה
-          </Alert>
-          <img src={apiUrl + props.captchaImgPath} />
-          <form
-            onSubmit={handleSubmit}
-            autoComplete="off"
-            style={{
-              padding: '.5em',
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            <TextField
-              id="answer"
-              variant="standard"
-              dir="ltr"
-              sx={{
-                input: {
-                  textAlign: 'center',
-                },
-              }}
-            />
-            <Button
-              type="submit"
-              variant="outlined"
-              style={{
-                margin: '.5em',
-              }}
-            >
-              שליחה
-            </Button>
-          </form>
-        </>
-      )}
+      <MuiAlert
+        severity="warning"
+        sx={{
+          marginBottom: '1em',
+        }}
+      >
+        יש להזין קוד אבטחה
+      </MuiAlert>
+      <img src={apiUrl + props.captchaImgPath} />
+      <form
+        onSubmit={handleSubmit}
+        autoComplete="off"
+        style={{
+          padding: '.5em',
+          display: 'flex',
+          alignItems: 'center',
+        }}
+      >
+        <TextField
+          id="answer"
+          variant="standard"
+          dir="ltr"
+          sx={{
+            input: {
+              textAlign: 'center',
+            },
+          }}
+        />
+        <Button
+          type="submit"
+          variant="outlined"
+          style={{
+            margin: '.5em',
+          }}
+        >
+          שליחה
+        </Button>
+      </form>
     </>
   )
 }
