@@ -21,7 +21,6 @@ export const getSelectOptions = (doc: JSDOM, name: string) => {
     label: opt.label,
     value: opt.value,
   }))
-  // .filter((opt) => !!opt.value)
 
   return options
 }
