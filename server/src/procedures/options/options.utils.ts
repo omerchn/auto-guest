@@ -24,12 +24,3 @@ export const getSelectOptions = (doc: JSDOM, name: string) => {
 
   return options
 }
-
-export const appendToBody = (
-  body: FormData,
-  input: { name: string; value: string | undefined }
-) => {
-  if (input.value) {
-    body.append(input.name, input.value)
-  }
-}

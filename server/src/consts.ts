@@ -17,7 +17,14 @@ export const FORM_NAMES = {
   guestPhone: 'GuestPhone_TB',
   captchaAnswer: 'CaptchaCodeTextBox',
   captchaSubmitButton: 'Button1',
+  maintenanceText: 'ProblemDesc',
 }
+
+export const CATEGORIES = {
+  guestVisit: 'פניות בנושא מבקרים',
+  guestSleep: 'פניות בנושא לינה',
+  maintenance: 'פניות בנושאי תחזוקה',
+} as const
 
 export const DOCUMENT_URL = 'https://meonot.shikunbinui.com'
 
@@ -27,7 +34,11 @@ export const SUCCESS_MESSAGE_SELECTOR = '#doneProgras'
 
 export const FAILURE_MESSAGE_SELECTOR = '#lblResult'
 
+export const MAINTENANCE_FAILURE_MESSAGE_SELECTOR = '#ProblemDescValidator'
+
 export const USER_ERRORS = {
   serverError: 'משהו נכשל',
   pageClosed: 'עמוד נסגר אוטומטית, יש לנסות שוב',
 }
+
+export const PAGE_AUTO_CLOSE_TIME_MS = 60 * 1000

@@ -5,8 +5,8 @@ import FormControl from '@mui/material/FormControl'
 import FormHelperText from '@mui/material/FormHelperText'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
-
-const categorySchema = z.enum(['פניות בנושא מבקרים', 'פניות בנושא לינה'])
+import { categorySchema } from './schemas'
+import { useTranslation } from 'react-i18next'
 
 export type Category = z.infer<typeof categorySchema>
 
@@ -16,6 +16,8 @@ interface Props {
 }
 
 export default function CategorySelect(props: Props) {
+  const { t } = useTranslation()
+
   return (
     <FormControl sx={{ marginBottom: '.5em' }}>
       <Select
@@ -25,13 +27,16 @@ export default function CategorySelect(props: Props) {
         label="category"
       >
         <MenuItem value={'פניות בנושא מבקרים' satisfies Category}>
-          פניית ביקור
+          {t('category.visit')}
         </MenuItem>
         <MenuItem value={'פניות בנושא לינה' satisfies Category}>
-          פניית לינה
+          {t('category.sleep')}
+        </MenuItem>
+        <MenuItem value={'פניות בנושאי תחזוקה' satisfies Category}>
+          {t('category.maintenance')}
         </MenuItem>
       </Select>
-      {!props.category && <FormHelperText>יש לבחור סוג פנייה</FormHelperText>}
+      {!props.category && <FormHelperText>{t('category.pick')}</FormHelperText>}
     </FormControl>
   )
 }

@@ -20,6 +20,7 @@ interface FieldProps<TName extends keyof Student> {
   disabled?: boolean
   onChange?: (name: keyof Student, value: string) => void
   isLoading?: boolean
+  transformLabel?: (label: string) => string
 }
 
 export default function ControlledSelect<TName extends keyof Student>(
@@ -71,7 +72,9 @@ export default function ControlledSelect<TName extends keyof Student>(
           .filter((opt) => !!opt.value.trim())
           .map((opt) => (
             <MenuItem key={opt.value} value={opt.label}>
-              {opt.label}
+              {props.transformLabel
+                ? props.transformLabel(opt.label)
+                : opt.label}
             </MenuItem>
           ))}
       </Select>

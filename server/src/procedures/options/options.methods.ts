@@ -6,40 +6,24 @@ import {
   USER_ERRORS,
 } from './../../consts'
 import { Options, OptionsInput } from './options.types'
-import { appendToBody, getInputValue, getSelectOptions } from './options.utils'
+import { getInputValue, getSelectOptions } from './options.utils'
 
 export const fetchDocument = async (input: OptionsInput) => {
   try {
     const body = new FormData()
 
-    appendToBody(body, {
-      name: FORM_NAMES.viewState,
-      value: input.viewState,
-    })
-    appendToBody(body, {
-      name: FORM_NAMES.eventValidation,
-      value: input.eventValidation,
-    })
-    appendToBody(body, {
-      name: FORM_NAMES.dorm,
-      value: input.values?.dorm,
-    })
-    appendToBody(body, {
-      name: FORM_NAMES.building,
-      value: input.values?.building,
-    })
-    appendToBody(body, {
-      name: FORM_NAMES.floor,
-      value: input.values?.floor,
-    })
-    appendToBody(body, {
-      name: FORM_NAMES.unit,
-      value: input.values?.unit,
-    })
-    appendToBody(body, {
-      name: FORM_NAMES.side,
-      value: input.values?.side,
-    })
+    const appendToBody = (name: string, value: string | undefined) => {
+      if (!value) return
+      body.append(name, value)
+    }
+
+    appendToBody(FORM_NAMES.viewState, input.viewState)
+    appendToBody(FORM_NAMES.eventValidation, input.eventValidation)
+    appendToBody(FORM_NAMES.dorm, input.values?.dorm)
+    appendToBody(FORM_NAMES.building, input.values?.building)
+    appendToBody(FORM_NAMES.floor, input.values?.floor)
+    appendToBody(FORM_NAMES.unit, input.values?.unit)
+    appendToBody(FORM_NAMES.side, input.values?.side)
 
     const res = await fetch(DOCUMENT_URL, {
       method: 'POST',

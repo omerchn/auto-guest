@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 // trpc
 import { trpc } from '../../lib/trpc'
 
@@ -15,25 +17,80 @@ import Loader from '../../components/general/Loader'
 import FadeIn from '../../containers/FadeIn'
 import Alert from '../../components/general/Alert'
 import { Student } from '../../components/StudentModal/types'
+import { guestCategorySchema, maintenanceCategorySchema } from './schemas'
+import { MaintenanceInput } from './MaintenanceInput'
 
 export default function Home() {
   const [student, setStudent] = useLocalStorage<Student>('student')
   const [category, setCategory] = useLocalStorage<Category>('category')
-  const { mutate, data, isLoading, error, reset } = trpc.open.useMutation()
+  const [maintenanceText, setMaintenanceText] = useState('')
 
-  const handleStart = (guest: Guest) => {
-    if (!student || !category) return
-    mutate({
+  const parsedGuestCategory = guestCategorySchema.safeParse(category)
+  const isGuestCategory = parsedGuestCategory.success
+
+  const parsedMaintenanceCategory =
+    maintenanceCategorySchema.safeParse(category)
+  const isMaintenanceCategory = parsedMaintenanceCategory.success
+
+  const {
+    mutate: mutateGuest,
+    data: guestData,
+    isLoading: guestLoading,
+    error: guestError,
+    reset: guestReset,
+  } = trpc.guest.useMutation()
+  const {
+    mutate: mutateMaintenance,
+    data: maintenanceData,
+    isLoading: maintenanceLoading,
+    error: maintenanceError,
+    reset: maintenanceReset,
+  } = trpc.maintenance.useMutation()
+
+  const error = (() => {
+    if (isGuestCategory) return guestError
+    if (isMaintenanceCategory) return maintenanceError
+  })()
+
+  const isLoading = (() => {
+    if (isGuestCategory) return guestLoading
+    if (isMaintenanceCategory) return maintenanceLoading
+  })()
+
+  const data = (() => {
+    if (isGuestCategory) return guestData
+    if (isMaintenanceCategory) return maintenanceData
+  })()
+
+  const handleGuestClick = (guest: Guest) => {
+    if (!student) return
+    if (!isGuestCategory) return
+    mutateGuest({
       student,
-      category,
+      category: parsedGuestCategory.data,
       guest,
     })
+  }
+
+  const handleMaintenanceSubmit = () => {
+    if (!student) return
+    if (!isMaintenanceCategory) return
+    mutateMaintenance({
+      student,
+      category: parsedMaintenanceCategory.data,
+      text: maintenanceText,
+    })
+  }
+
+  const handleReset = () => {
+    guestReset()
+    maintenanceReset()
   }
 
   if (error) {
     return (
       <Box>
-        <Alert severity="error" message={error.message} onReset={reset} />
+        <Alert severity="error" message={error.message} onReset={handleReset} />
       </Box>
     )
   }
@@ -54,7 +111,7 @@ export default function Home() {
             <SolveCaptcha
               pageId={data.pageId}
               captchaImgPath={data.captchaImgPath}
-              onReset={reset}
+              onReset={handleReset}
             />
           </Box>
         </FadeIn>
@@ -69,10 +126,19 @@ export default function Home() {
         {student && (
           <>
             <CategorySelect category={category} onChange={setCategory} />
-            <SavedGuests
-              onSubmit={handleStart}
-              disabled={!student || !category}
-            />
+            {isGuestCategory ? (
+              <SavedGuests
+                onSubmit={handleGuestClick}
+                disabled={!student || !category}
+              />
+            ) : isMaintenanceCategory ? (
+              <MaintenanceInput
+                text={maintenanceText}
+                onChange={(text) => setMaintenanceText(text)}
+                onSubmit={handleMaintenanceSubmit}
+                disabled={!student || !category}
+              />
+            ) : null}
           </>
         )}
       </Box>

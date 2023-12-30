@@ -3,6 +3,7 @@ import {
   USER_ERRORS,
   FAILURE_MESSAGE_SELECTOR,
   SUCCESS_MESSAGE_SELECTOR,
+  MAINTENANCE_FAILURE_MESSAGE_SELECTOR,
 } from '../../consts'
 
 export const getFinalMessage = async (page: Page) => {
@@ -10,12 +11,26 @@ export const getFinalMessage = async (page: Page) => {
     await Promise.race([
       page.waitForSelector(SUCCESS_MESSAGE_SELECTOR),
       page.waitForSelector(FAILURE_MESSAGE_SELECTOR),
+      page.waitForSelector(MAINTENANCE_FAILURE_MESSAGE_SELECTOR),
     ])
 
     const { type, message } = await page.evaluate(
-      ({ SUCCESS_MESSAGE_SELECTOR, FAILURE_MESSAGE_SELECTOR }) => {
+      ({
+        SUCCESS_MESSAGE_SELECTOR,
+        FAILURE_MESSAGE_SELECTOR,
+        MAINTENANCE_FAILURE_MESSAGE_SELECTOR,
+      }) => {
         const errorEl = document.querySelector(FAILURE_MESSAGE_SELECTOR)
         const successEl = document.querySelector(SUCCESS_MESSAGE_SELECTOR)
+        const maintenanceErrorEl = document.querySelector(
+          MAINTENANCE_FAILURE_MESSAGE_SELECTOR
+        )
+        if (maintenanceErrorEl) {
+          return {
+            type: 'failure' as const,
+            message: maintenanceErrorEl.textContent,
+          }
+        }
         if (errorEl) {
           return {
             type: 'failure' as const,
@@ -30,7 +45,11 @@ export const getFinalMessage = async (page: Page) => {
         }
         return {}
       },
-      { SUCCESS_MESSAGE_SELECTOR, FAILURE_MESSAGE_SELECTOR }
+      {
+        SUCCESS_MESSAGE_SELECTOR,
+        FAILURE_MESSAGE_SELECTOR,
+        MAINTENANCE_FAILURE_MESSAGE_SELECTOR,
+      }
     )
 
     if (!message) {

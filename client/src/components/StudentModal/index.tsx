@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
@@ -10,7 +11,6 @@ import Dialog from '@mui/material/Dialog'
 import DialogTitle from '@mui/material/DialogTitle'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
-import DialogContentText from '@mui/material/DialogContentText'
 import ControlledSelect from '../form/ControlledSelect'
 import Grow from '@mui/material/Grow'
 import { TransitionProps } from '@mui/material/transitions'
@@ -18,6 +18,7 @@ import { useStudentOptions } from '../../hooks/useStudentOptions'
 import { Student, StudentSchema } from './types'
 import { DEFAULT } from './consts'
 import { useDocumentState } from '../../hooks/document-state'
+import { getTranslatedDormName } from './utils'
 
 interface Props {
   defaultValues?: Student
@@ -27,6 +28,7 @@ interface Props {
 }
 
 export default function StudentModal(props: Props) {
+  const { t, i18n } = useTranslation()
   const form = useForm<Student>({
     resolver: zodResolver(StudentSchema),
     mode: 'onBlur',
@@ -34,7 +36,6 @@ export default function StudentModal(props: Props) {
 
   const { resetSubToMain, mergeSubToMain } = useDocumentState()
   const { options, isFetching, setValues, resetOptions } = useStudentOptions()
-  console.log(options)
 
   const handleSelectChange = (key: keyof Student, value: string) => {
     setValues({ [key]: value })
@@ -58,15 +59,10 @@ export default function StudentModal(props: Props) {
   }, [props.defaultValues])
 
   return (
-    <Dialog
-      open={props.open}
-      onClose={props.onClose}
-      TransitionComponent={Transition}
-    >
+    <Dialog open={props.open} TransitionComponent={Transition}>
       <Box component="form" onSubmit={form.handleSubmit(handleSubmit)}>
-        <DialogTitle>שמירת סטודנט</DialogTitle>
+        <DialogTitle>{t('student.details')}</DialogTitle>
         <DialogContent>
-          <DialogContentText>נא להזין פרטי סטודנט</DialogContentText>
           <Box display="flex" flexDirection="column">
             <Controller
               name="id"
@@ -75,7 +71,7 @@ export default function StudentModal(props: Props) {
                 <ControlledTextField
                   type="number"
                   field={field}
-                  label="ת.ז"
+                  label={t('fields.id')}
                   error={form.formState.errors.id}
                 />
               )}
@@ -86,7 +82,7 @@ export default function StudentModal(props: Props) {
               render={({ field }) => (
                 <ControlledTextField
                   field={field}
-                  label="שם מלא"
+                  label={t('fields.full_name')}
                   error={form.formState.errors.fullName}
                 />
               )}
@@ -98,7 +94,7 @@ export default function StudentModal(props: Props) {
                 <ControlledTextField
                   type="number"
                   field={field}
-                  label="טלפון"
+                  label={t('fields.phone')}
                   error={form.formState.errors.phone}
                 />
               )}
@@ -110,10 +106,11 @@ export default function StudentModal(props: Props) {
                 <ControlledSelect
                   options={options?.dorm ?? []}
                   field={field}
-                  label="מעון"
+                  label={t('fields.dorm')}
                   error={form.formState.errors.dorm}
                   onChange={handleSelectChange}
                   isLoading={isFetching}
+                  transformLabel={getTranslatedDormName(i18n.language)}
                 />
               )}
             />
@@ -124,7 +121,7 @@ export default function StudentModal(props: Props) {
                 <ControlledSelect
                   options={options?.building ?? []}
                   field={field}
-                  label="בניין"
+                  label={t('fields.building')}
                   error={form.formState.errors.building}
                   onChange={handleSelectChange}
                   isLoading={isFetching}
@@ -138,7 +135,7 @@ export default function StudentModal(props: Props) {
                 <ControlledSelect
                   options={options?.floor ?? []}
                   field={field}
-                  label="קומה"
+                  label={t('fields.floor')}
                   error={form.formState.errors.floor}
                   onChange={handleSelectChange}
                   isLoading={isFetching}
@@ -152,7 +149,7 @@ export default function StudentModal(props: Props) {
                 <ControlledSelect
                   options={options?.unit ?? []}
                   field={field}
-                  label="מספר דירה"
+                  label={t('fields.apartment')}
                   error={form.formState.errors.unit}
                   onChange={handleSelectChange}
                   isLoading={isFetching}
@@ -166,7 +163,7 @@ export default function StudentModal(props: Props) {
                 <ControlledSelect
                   options={options?.side ?? []}
                   field={field}
-                  label="צד"
+                  label={t('fields.side')}
                   error={form.formState.errors.side}
                   onChange={handleSelectChange}
                   isLoading={isFetching}
@@ -177,14 +174,14 @@ export default function StudentModal(props: Props) {
         </DialogContent>
         <DialogActions>
           <Button variant="text" onClick={resetAndClose}>
-            ביטול
+            {t('button.cancel')}
           </Button>
           <Button
             variant="outlined"
             type="submit"
             disabled={!form.formState.isDirty}
           >
-            שמירה
+            {t('button.save')}
           </Button>
         </DialogActions>
       </Box>

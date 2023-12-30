@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 // components
 import Button from '@mui/material/Button'
@@ -12,7 +13,10 @@ interface Props {
 }
 
 export default function SavedStudent(props: Props) {
+  const { t } = useTranslation()
   const [ModalOpen, setModalOpen] = useState(false)
+
+  const name = props.student?.fullName.split(' ')[0]
 
   return (
     <Box>
@@ -23,13 +27,15 @@ export default function SavedStudent(props: Props) {
             marginTop: '.5em',
           }}
         >
-          <Box>שלום, {props.student.fullName.split(' ')[0]}</Box>
-          <Button onClick={() => setModalOpen(true)}>עריכת פרטי סטודנט</Button>
+          <Box>{t('student.greeting', { name })}</Box>
+          <Button onClick={() => setModalOpen(true)}>
+            {t('student.edit_details')}
+          </Button>
         </Box>
       ) : (
         <Box>
           <Button variant="outlined" onClick={() => setModalOpen(true)}>
-            הזנת פרטי סטודנט
+            {t('student.insert_details')}
           </Button>
         </Box>
       )}

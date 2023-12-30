@@ -12,7 +12,6 @@ interface Props {
 }
 
 export default function Alert(props: Props) {
-  console.log(props)
   return (
     <FadeIn duration={200}>
       <MuiAlert severity={props.severity}>{props.message}</MuiAlert>

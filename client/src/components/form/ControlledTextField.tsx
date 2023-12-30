@@ -20,6 +20,7 @@ export default function ControlledTextField(props: FieldProps) {
       label={props.label}
       error={!!props.error}
       helperText={props.error?.message}
+      dir={props.type === 'number' ? 'ltr' : undefined}
     />
   )
 }

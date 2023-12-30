@@ -1,4 +1,6 @@
 import React, { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
+import { t } from 'i18next'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -11,14 +13,31 @@ import Dialog from '@mui/material/Dialog'
 import DialogTitle from '@mui/material/DialogTitle'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
-import DialogContentText from '@mui/material/DialogContentText'
 import Grow from '@mui/material/Grow'
 import { TransitionProps } from '@mui/material/transitions'
 
 const GuestSchema = z.object({
-  id: z.string().trim().min(1, 'יש להזין מספר ת.ז'),
-  fullName: z.string().trim().min(1, 'יש להזין שם מלא'),
-  phone: z.string().trim().min(1, 'יש להזין מספר טלפון'),
+  id: z
+    .string()
+    .trim()
+    .refine(
+      (input) => !!input,
+      () => ({ message: t('fields.id_error') })
+    ),
+  fullName: z
+    .string()
+    .trim()
+    .refine(
+      (input) => !!input,
+      () => ({ message: t('fields.full_name_error') })
+    ),
+  phone: z
+    .string()
+    .trim()
+    .refine(
+      (input) => !!input,
+      () => ({ message: t('fields.phone_error') })
+    ),
 })
 
 export type Guest = z.infer<typeof GuestSchema>
@@ -37,6 +56,7 @@ interface Props {
 }
 
 export default function GuestModal(props: Props) {
+  const { t } = useTranslation()
   const form = useForm<Guest>({
     resolver: zodResolver(GuestSchema),
   })
@@ -55,16 +75,20 @@ export default function GuestModal(props: Props) {
     form.reset(props.defaultValues || DEFAULT)
   }, [props.defaultValues])
 
+  const handleClose = () => {
+    form.clearErrors()
+    props.onClose()
+  }
+
   return (
     <Dialog
       open={props.open}
-      onClose={props.onClose}
+      onClose={handleClose}
       TransitionComponent={Transition}
     >
       <Box component="form" onSubmit={form.handleSubmit(handleSubmit)}>
-        <DialogTitle>שמירת אורח</DialogTitle>
+        <DialogTitle>{t('guest.details')}</DialogTitle>
         <DialogContent>
-          <DialogContentText>נא להזין פרטי אורח</DialogContentText>
           <Box display="flex" flexDirection="column">
             <Controller
               name="id"
@@ -73,7 +97,7 @@ export default function GuestModal(props: Props) {
                 <ControlledTextField
                   type="number"
                   field={field}
-                  label="ת.ז"
+                  label={t('fields.id')}
                   error={form.formState.errors.id}
                 />
               )}
@@ -84,7 +108,7 @@ export default function GuestModal(props: Props) {
               render={({ field }) => (
                 <ControlledTextField
                   field={field}
-                  label="שם מלא"
+                  label={t('fields.full_name')}
                   error={form.formState.errors.fullName}
                 />
               )}
@@ -96,7 +120,7 @@ export default function GuestModal(props: Props) {
                 <ControlledTextField
                   type="number"
                   field={field}
-                  label="טלפון"
+                  label={t('fields.phone')}
                   error={form.formState.errors.phone}
                 />
               )}
@@ -105,10 +129,10 @@ export default function GuestModal(props: Props) {
         </DialogContent>
         <DialogActions>
           <Button variant="text" onClick={resetAndClose}>
-            ביטול
+            {t('button.cancel')}
           </Button>
           <Button variant="outlined" type="submit">
-            שמירה
+            {t('button.save')}
           </Button>
         </DialogActions>
       </Box>

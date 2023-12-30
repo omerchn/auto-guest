@@ -1,16 +1,12 @@
 import React, { useState } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { httpBatchLink } from '@trpc/client'
-import { inferRouterInputs } from '@trpc/server'
 import { createTRPCReact } from '@trpc/react-query'
 
 // types
 import type { AppRouter } from '../../../../server/src/router'
 
 export const trpc = createTRPCReact<AppRouter>()
-
-type RouterInput = inferRouterInputs<AppRouter>
-export type OpenInput = RouterInput['open']
 
 export const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:4000'
 
