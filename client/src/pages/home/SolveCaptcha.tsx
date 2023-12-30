@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { trpc, apiUrl } from '../../lib/trpc'
 import MuiAlert from '@mui/material/Alert'
 import TextField from '@mui/material/TextField'
@@ -12,6 +13,7 @@ interface Props {
 }
 
 export default function SolveCaptcha(props: Props) {
+  const { t } = useTranslation()
   const { mutate, isLoading, error, data } = trpc.solve.useMutation()
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -29,7 +31,7 @@ export default function SolveCaptcha(props: Props) {
   }
 
   if (isLoading) {
-    return <Loader message="מזין קוד.." />
+    return <Loader message={t('inserting_code')} />
   }
 
   if (data) {
@@ -61,7 +63,7 @@ export default function SolveCaptcha(props: Props) {
           marginBottom: '1em',
         }}
       >
-        יש להזין קוד אבטחה
+        {t('insert_security_code')}
       </MuiAlert>
       <img src={apiUrl + props.captchaImgPath} />
       <form
@@ -90,7 +92,7 @@ export default function SolveCaptcha(props: Props) {
             margin: '.5em',
           }}
         >
-          שליחה
+          {t('button.send')}
         </Button>
       </form>
     </>

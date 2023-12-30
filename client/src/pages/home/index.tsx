@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 // trpc
 import { trpc } from '../../lib/trpc'
@@ -21,6 +22,7 @@ import { guestCategorySchema, maintenanceCategorySchema } from './schemas'
 import { MaintenanceInput } from './MaintenanceInput'
 
 export default function Home() {
+  const { t } = useTranslation()
   const [student, setStudent] = useLocalStorage<Student>('student')
   const [category, setCategory] = useLocalStorage<Category>('category')
   const [maintenanceText, setMaintenanceText] = useState('')
@@ -98,7 +100,7 @@ export default function Home() {
   if (isLoading) {
     return (
       <Box>
-        <Loader message="ממלא טופס, נא להמתין.." />
+        <Loader message={t('filling_form')} />
       </Box>
     )
   }

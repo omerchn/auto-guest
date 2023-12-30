@@ -45,11 +45,15 @@ export type Translation = {
     open_request: string
     cancel: string
     save: string
+    send: string
   }
   guest: {
     add: string
     details: string
   }
+  filling_form: string
+  insert_security_code: string
+  inserting_code: string
 }
 
 export const resources: Record<Language, { translation: Translation }> = {
@@ -96,11 +100,15 @@ export const resources: Record<Language, { translation: Translation }> = {
         open_request: 'פתיחת פנייה',
         cancel: 'ביטול',
         save: 'שמירה',
+        send: 'שליחה',
       },
       guest: {
         add: 'הוספת אורח',
         details: 'פרטי אורח',
       },
+      filling_form: 'ממלא טופס, נא להמתין..',
+      insert_security_code: 'יש להזין קוד אבטחה',
+      inserting_code: 'מזין קוד..',
     },
   },
   en: {
@@ -146,11 +154,15 @@ export const resources: Record<Language, { translation: Translation }> = {
         open_request: 'Open request',
         cancel: 'Cancel',
         save: 'Save',
+        send: 'Send',
       },
       guest: {
         add: 'Add guest',
         details: 'Guest Details',
       },
+      filling_form: 'Filling form, please hold..',
+      insert_security_code: 'Please enter security code',
+      inserting_code: 'Entering code..',
     },
   },
 }
